@@ -1,0 +1,13 @@
+//
+// Created by tdh5188 on 2/25/18.
+//
+
+#ifndef POLYNOMIAL_ROOT_FINDING_PGA_POPULATION_H
+#define POLYNOMIAL_ROOT_FINDING_PGA_POPULATION_H
+
+
+class Population {
+
+};
+
+#endif //POLYNOMIAL_ROOT_FINDING_PGA_POPULATION_H
