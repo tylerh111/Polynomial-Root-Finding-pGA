@@ -1,16 +1,30 @@
-//
-// Created by tdh5188 on 2/25/18.
-//
 
 #include <iostream>
 #include "Individual.h"
 
 
 Individual::Individual() {
-    std::cout << "individual created" << std::endl;
+    this->_real = 0;
+    this->_imaginary = 0;
+    this->_real_bits = 0;
+    this->_imaginary_bits = 0;
 }
 
-Individual::~Individual(){
-    std::cout << "individual deleted" << std::endl;
+
+Individual::Individual(double real, double imaginary) {
+    this->_real = real;
+    this->_imaginary = imaginary;
+    this->_real_bits = 0;
+    this->_imaginary_bits = 0;
 }
+
+
+
+
+void Individual::setFitness(double fitness) {
+    this->_fitness = fitness;
+}
+
+
+
 

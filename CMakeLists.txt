@@ -8,7 +8,8 @@ set(SOURCE_FILES
         World/Individual.h
         World/Population.cpp
         World/Population.h
-        main.cpp
-        World.h)
+        World.h
+        Local.h
+        main.cpp)
 
 add_executable(Polynomial_Root_Finding_pGA ${SOURCE_FILES})
