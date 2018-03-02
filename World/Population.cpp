@@ -14,28 +14,35 @@ Population::Population(int pop_size, double mutation_rate, std::function<double(
 
 
     for (int i = 0; i < pop_size; i++)
-        _population[i] = new Individual(1, 1);
+        _population[i] = new Individual(3, 4);
 
 
 }
 
 
 Population::~Population() {
-    //delete each individual
-    for (int i = 0; i < _population_size; i++)
-        delete _population[i];
-    //delete popuation
-    delete[] _population;
+    for (int i = 0; i < _population_size; i++) delete _population[i]; //delete each individual
+    delete[] _population; //delete popuation
 }
+
+
+
+
+Individual& Population::select() {
+    return (*_population[0]);
+}
+
+
 
 
 
 /*
-Individual Population::crossover(Individual& x1, Individual &x2)[2] {
+Individual* Population::crossover(Individual& x1, Individual &x2) {
     Individual arr[2] = {x1, x2};
-    return (Individual[2])(arr);
+    return (Individual[2]) (arr);
 }
 */
+
 
 
 

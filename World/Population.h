@@ -26,7 +26,7 @@ public:
 
     //Genetic operators
     Individual& select();
-    //Individual crossover(Individual& x1, Individual& x2)[2];
+    Individual* crossover(Individual& x1, Individual& x2);
     void mutate(Individual& x);
     void replace(Population& replacement);
 

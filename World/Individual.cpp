@@ -1,6 +1,9 @@
 
-#include <iostream>
 #include "Individual.h"
+
+#include <iostream>
+#include <complex>
+
 
 
 Individual::Individual() {

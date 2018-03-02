@@ -4,12 +4,12 @@
 
 //#include <math.h>
 #include <cmath>
+#include <complex>
 
 
 #include "World.h"
 
-//#include "World/Population.h"
-//#include "World/Individual.h"
+
 
 
 int main() {
@@ -18,9 +18,14 @@ int main() {
 
     Individual me(3, 4);
 
+
     auto fitFunct = [](Individual& x){
-        return std::sqrt(std::pow(x.getReal(), 2) +
-                         std::pow(x.getImaginary(), 2));
+        std::complex<double> point(x.getReal(), x.getImaginary());
+        std::complex<double> output = point * point + std::complex<double>(1,0);
+
+
+        return std::sqrt(std::pow(output.real(), 2) +
+                         std::pow(output.imag(), 2));
     };
 
 

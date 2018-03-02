@@ -2,7 +2,6 @@
 #define POLYNOMIAL_ROOT_FINDING_PGA_INDIVIDUAL_H
 
 #include "Population.h"
-//class Population;
 
 class Individual {
     friend class Population;
