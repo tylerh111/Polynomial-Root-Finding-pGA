@@ -6,27 +6,47 @@
 
 
 
-Individual::Individual() {
-    this->_real = 0;
-    this->_imaginary = 0;
-    this->_real_bits = 0;
-    this->_imaginary_bits = 0;
+Individual::Individual() : std::complex() { }
+
+Individual::Individual(T real, T imaginary): std::complex<T>(real, imaginary) { }
+
+
+void Individual::setReal(T real) {
+    this->real(real);
 }
 
 
-Individual::Individual(double real, double imaginary) {
-    this->_real = real;
-    this->_imaginary = imaginary;
-    this->_real_bits = 0;
-    this->_imaginary_bits = 0;
+void Individual::setImaginary(T imaginary) {
+    this->imag(imaginary);
 }
-
-
 
 
 void Individual::setFitness(double fitness) {
     this->_fitness = fitness;
 }
+
+
+
+Individual* Individual::operator*(Individual &that) {
+
+    std::complex op1 = (std::complex<T>) *this;
+    std::complex op2 = (std::complex<T>) that;
+    op1 = op1 * op2;
+
+    return new Individual();
+}
+
+
+std::ostream &operator<<(std::ostream& out, const Individual& c) {
+    out << c.real() << " + " << c.imag() << "i";
+    return out;
+}
+
+
+
+
+
+
 
 
 

@@ -56,8 +56,10 @@ void Population::fitPopulation(){
 
 
 
+
 Individual& Population::operator[] (int ndx){
     return *_population[ndx];
 }
+
 
 
