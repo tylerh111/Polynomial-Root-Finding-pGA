@@ -2,10 +2,9 @@
 #include <iostream>
 #include <typeinfo>
 
-//#include <math.h>
 #include <cmath>
-#include <unistd.h>
-#include <sys/wait.h>
+//#include <unistd.h>
+//#include <sys/wait.h>
 
 #include "World.h"
 #include <complex>
@@ -16,17 +15,27 @@
 int main() {
     std::cout << "hello world from Polynomial-Root-Finding-pGA" << std::endl;
 
-    std::string programPath = "/home/tdh5188/Desktop/test_cpp/test_rp.out";
+    //std::string programPath = "/home/tdh5188/Desktop/test_cpp/test_rp.out";
 
-
+    //std::complex test(10,2);
+    //std::complex result = test * test;
 
     Individual me(3, 4);
 
+    auto ret = me * me;
 
-    std::cout << "me^2 = " << *(me * me) << std::endl;
+    std::cout << "me^2 = " << ret << std::endl;
 
-    //std::complex<double> ret(2, 3);
-    //std::cout << "ret = " << ret * ret << std::endl;
+    std::complex<double> this_is_insane(10,3);
+
+    std::complex<double> temp = static_cast<std::complex<double>>(me);
+
+    me = this_is_insane;
+    this_is_insane = temp;
+
+    std::cout << "this_is_insane = " << this_is_insane << std::endl;
+    std::cout << "me = " << me << std::endl;
+
 
 /*
     auto fitFunct = [](Individual& x){

@@ -25,6 +25,7 @@ Population::~Population() {
     delete[] _population; //delete popuation
 }
 
+/*
 
 
 
@@ -32,6 +33,7 @@ Individual& Population::select() {
     return (*_population[0]);
 }
 
+*/
 
 
 

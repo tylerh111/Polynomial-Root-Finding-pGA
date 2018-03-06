@@ -16,6 +16,10 @@ private:
     double _mutation_rate;
     std::function<double(Individual&)> _fitness_function;
 
+    double _major_axis; //ellipse a value
+    double _minor_axis; //ellipse b value
+
+
     //hide default population constructor
     Population() = default;
 

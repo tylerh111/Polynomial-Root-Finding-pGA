@@ -5,47 +5,63 @@
 
 #include <iostream>
 #include <complex>
+#include <cmath>
 
 
-typedef int T;
 
-
-class Individual : public std::complex<T> {
+class Individual {//: public std::complex<double> {
     friend class Population;
 private:
     //Chromosomes
-    //long long _real_bits;
-    //long long _imaginary_bits;
+    double _real;
+    double _imaginary;
 
-    //double _real;
-    //double _imaginary;
+    std::complex<double> _chromosome;
 
     double _fitness;
 
 protected:
 
-    void setReal(T real);
-    void setImaginary(T imaginary);
+    void setReal(double real);
+    void setImaginary(double imaginary);
+
+    void setChromosome(double real, double imaginary);
+    void setChromosome(std::complex<double> complex);
+
     void setFitness(double fitness);
 
 public:
 
     //Constructor
-    Individual() = default;
-    Individual(T real, T imaginary);
+    Individual();
+    explicit Individual(double real, double imaginary);
+    explicit Individual(std::complex<double> complex);
+    Individual(const Individual& other) = default;
+
+    //Destructor
     ~Individual() = default;
 
     //Accessors
-    inline T getReal() const      { return this->real(); }
-    inline T getImaginary() const { return this->imag(); }
-    inline double getFitness() const   { return this->_fitness; }
-
-    //inline bool getRealBit(int car) const      { return (this->_real_bits & 1 << car) != 0; }
-    //inline bool getImaginaryBit(int car) const { return (this->_imaginary_bits & 1 << car) != 0; }
+    inline double getReal() const                     { return this->_real; }
+    inline double getImaginary() const                { return this->_imaginary; }
+    inline std::complex<double> getChromosome() const { return this->_chromosome; }
+    inline double getFitness() const                  { return this->_fitness; }
 
 
+    inline double getAbsoluteValue() const { return std::abs(this->_chromosome); }
 
-    Individual* operator*(Individual& that);
+
+    friend Individual operator+(const Individual& lhs, const Individual& rhs);
+    friend Individual operator-(const Individual& lhs, const Individual& rhs);
+    friend Individual operator*(const Individual& lhs, const Individual& rhs);
+    friend Individual operator/(const Individual& lhs, const Individual& rhs);
+    Individual& operator= (const Individual& that) = default;
+    Individual& operator= (const std::complex<double>& that);
+
+
+
+    explicit operator std::complex<double>() const;
+
 
     friend std::ostream& operator<<(std::ostream &out, const Individual &c);
 
