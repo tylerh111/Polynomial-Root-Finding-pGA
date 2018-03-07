@@ -4,6 +4,9 @@
 
 #include <iostream>
 #include <cstdlib>
+#include <random>
+#include <limits>
+#include <ctime>
 
 /*	int get_rand(low_bound = 0, up_bound = 0, is_low_incl = true, is_up_incl = false)
  *	get_rand provides a random number between range provided
@@ -16,6 +19,7 @@
  *
  *	if up_bound == 0: random number between [0, RAND_MAX] is returned
  */
+/*
 int get_rand(int low_bound = 0, int up_bound = 0, bool is_low_incl = true, bool is_up_incl = false) {
     int ret = 0;
 
@@ -36,6 +40,29 @@ int get_rand(int low_bound = 0, int up_bound = 0, bool is_low_incl = true, bool 
         ret = std::rand();
     return ret;
 }
+*/
+
+
+
+
+double get_rand(double lower_bound = 0.0, double upper_bound = std::numeric_limits<double>::max()){
+
+    std::default_random_engine generator;
+    //generator.seed((unsigned long) std::time(nullptr));
+    double offset = upper_bound - lower_bound;
+    std::uniform_real_distribution<double> distribution(0.0, offset);
+
+    return distribution(generator) - offset;
+}
+
+
+
+
+
+
+
+
+
 
 
 

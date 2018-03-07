@@ -9,7 +9,7 @@
 
 
 
-class Individual {//: public std::complex<double> {
+class Individual {
     friend class Population;
 private:
     //Chromosomes
@@ -21,6 +21,7 @@ private:
     double _fitness;
 
 protected:
+    //explicit Individual(double real, double imaginary, double fitness);
 
     void setReal(double real);
     void setImaginary(double imaginary);
@@ -37,6 +38,7 @@ public:
     explicit Individual(double real, double imaginary);
     explicit Individual(std::complex<double> complex);
     Individual(const Individual& other) = default;
+    Individual(Individual&& other) = default;
 
     //Destructor
     ~Individual() = default;
@@ -51,11 +53,23 @@ public:
     inline double getAbsoluteValue() const { return std::abs(this->_chromosome); }
 
 
-    friend Individual operator+(const Individual& lhs, const Individual& rhs);
-    friend Individual operator-(const Individual& lhs, const Individual& rhs);
-    friend Individual operator*(const Individual& lhs, const Individual& rhs);
-    friend Individual operator/(const Individual& lhs, const Individual& rhs);
+    //Operations
+    inline friend Individual operator+ (const Individual& lhs, const Individual& rhs) { return Individual(lhs.getChromosome() + rhs.getChromosome()); }
+    inline friend Individual operator- (const Individual& lhs, const Individual& rhs) { return Individual(lhs.getChromosome() - rhs.getChromosome()); }
+    inline friend Individual operator* (const Individual& lhs, const Individual& rhs) { return Individual(lhs.getChromosome() * rhs.getChromosome()); }
+    inline friend Individual operator/ (const Individual& lhs, const Individual& rhs) { return Individual(lhs.getChromosome() / rhs.getChromosome()); }
+
+    inline friend bool operator<  (const Individual& lhs, const Individual& rhs)      { return lhs.getFitness() <  rhs.getFitness(); }
+    inline friend bool operator>  (const Individual& lhs, const Individual& rhs)      { return lhs.getFitness() >  rhs.getFitness(); }
+    inline friend bool operator<= (const Individual& lhs, const Individual& rhs)      { return lhs.getFitness() <= rhs.getFitness(); }
+    inline friend bool operator>= (const Individual& lhs, const Individual& rhs)      { return lhs.getFitness() >= rhs.getFitness(); }
+
+    inline friend bool operator== (const Individual& lhs, const Individual& rhs)      { return lhs.getChromosome() == rhs.getChromosome(); }
+    inline friend bool operator!= (const Individual& lhs, const Individual& rhs)      { return lhs.getChromosome() != rhs.getChromosome(); }
+
+
     Individual& operator= (const Individual& that) = default;
+    Individual& operator= (Individual&& that) = default;
     Individual& operator= (const std::complex<double>& that);
 
 

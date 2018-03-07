@@ -6,6 +6,8 @@
 //#include <unistd.h>
 //#include <sys/wait.h>
 
+#include <random>
+
 #include "World.h"
 #include <complex>
 
@@ -17,49 +19,47 @@ int main() {
 
     //std::string programPath = "/home/tdh5188/Desktop/test_cpp/test_rp.out";
 
-    //std::complex test(10,2);
-    //std::complex result = test * test;
 
-    Individual me(3, 4);
+    /*//testing random numbers
+    std::default_random_engine generator;
+    double offset = 10000 - (-10000);
+    std::uniform_real_distribution<double> distribution(0.0, offset);
 
-    auto ret = me * me;
+    for (int i = 0; i < 100; i++){
+        std::cout << "random number " << i << " is " << distribution(generator) - offset << std::endl;
+    }
 
-    std::cout << "me^2 = " << ret << std::endl;
-
-    std::complex<double> this_is_insane(10,3);
-
-    std::complex<double> temp = static_cast<std::complex<double>>(me);
-
-    me = this_is_insane;
-    this_is_insane = temp;
-
-    std::cout << "this_is_insane = " << this_is_insane << std::endl;
-    std::cout << "me = " << me << std::endl;
+    std::cout << "\n\n";*/
 
 
-/*
-    auto fitFunct = [](Individual& x){
-        std::complex<double> point(x.getReal(), x.getImaginary());
-        std::complex<double> output = point * point + std::complex<double>(1,0);
 
 
-        return std::sqrt(std::pow(output.real(), 2) +
-                         std::pow(output.imag(), 2));
+    std::function<double(Individual&)> fitFunct = [](Individual& x){
+        //std::complex<double> temp = x.getChromosome();
+        //std::complex<double> output = std::pow(temp, 2) + 1.0;
 
-        std::complex output = x * x;
-
-
-        return std::pow()
-        //return std::sqrt(std::pow(x.getReal(), 2) +
-        //                 std::pow(x.getImaginary(), 2));
+        return std::abs(std::pow(x.getChromosome(), 2) + 1.0);
     };
 
+    std::cout << "Creating population\n";
+    Population mPop(100, 0.25, 5, fitFunct);
+    std::cout << "Finished creating population\n";
+    std::cout << "Fitting the population based on fitness function\n";
+    mPop.sort();
 
-
-    Population p(100, .25, fitFunct);
-    p.fitPopulation();
-
-    std::cout << "p[0].getfitness = " << p[0].getFitness() << std::endl;
+/*
+    std::cout << "\nDisplaying all Individual's fitness\n";
+    for (int i = 0; i < mPop.getPopulationSize(); i++){
+        std::cout << "Individual " << i << ": (" << mPop[i] << ") = " << mPop[i].getFitness() << std::endl;
+    }
 */
+    std::cout << "\nPopulation's total fitness = " << mPop.populationFitness() << std::endl;
+
+
+    std::cout << "\n\n\t::EVOLVING::\n\n";
+    mPop.evolve(100);
+
+
+
     return 0;
 }

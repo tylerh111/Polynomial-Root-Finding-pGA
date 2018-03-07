@@ -21,6 +21,14 @@ Individual::Individual(double real, double imaginary){
 
 }
 
+/*Individual::Individual(double real, double imaginary, double fitness){
+    _real = real;
+    _imaginary = imaginary;
+    _chromosome = std::complex<double>(real,imaginary);
+    _fitness = fitness;
+
+}*/
+
 Individual::Individual(std::complex<double> complex){
     _real = complex.real();
     _imaginary = complex.imag();
@@ -33,6 +41,11 @@ Individual::Individual(std::complex<double> complex){
 
 
 // MUTATORS
+void Individual::setReal(double real) {
+    _real= real;
+    _chromosome.real(real);
+}
+
 void Individual::setImaginary(double imaginary) {
     _imaginary = imaginary;
     _chromosome.imag(imaginary);
@@ -58,12 +71,6 @@ void Individual::setFitness(double fitness) {
 
 
 
-
-// OPERATORS
-Individual operator+ (const Individual& lhs, const Individual& rhs) { return Individual(lhs.getChromosome() + rhs.getChromosome()); }
-Individual operator- (const Individual& lhs, const Individual& rhs) { return Individual(lhs.getChromosome() - rhs.getChromosome()); }
-Individual operator* (const Individual& lhs, const Individual& rhs) { return Individual(lhs.getChromosome() * rhs.getChromosome()); }
-Individual operator/ (const Individual& lhs, const Individual& rhs) { return Individual(lhs.getChromosome() / rhs.getChromosome()); }
 
 Individual& Individual::operator= (const std::complex<double>& that){
     this->_real = that.real();
