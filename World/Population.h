@@ -4,6 +4,7 @@
 //#include <tuple>
 #include <vector>
 #include <functional>
+#include <random>
 
 #include "Individual.h"
 class Individual;
@@ -35,52 +36,54 @@ private:
         }
     } _pop_size_ex;
 
+
+    //random number generator
+    //std::default_random_engine _rng;
+
+
 protected:
 
     explicit Population(int pop_size);
 
 
     //Genetic operators
-    void select(Individual parents[2]);
-    void crossover(Individual offspring[2], Individual& p1, Individual& p2);
+    void select(Individual* parents[2]);
+    void crossover(Individual offspring[2], Individual* parents[2]);
     void mutate(Individual& x);
     void replace(Population& replacement);
 
+    bool checkSolution() const;
+    bool checkConvergence() const;
+    void handleConvergence();
 
     //modify population
     void add(Individual& x);
     void remove(Individual& x);
 
 
-    void getInformation(double arr[8]);
-
-
-
 public:
 
     //Constructors
-    Population(int pop_size, double mut_rate, double alpha, std::function<double(Individual&)>& function);
+    Population(int pop_size, double mut_rate, double mut_radius, double start_radius,
+               std::function<double(Individual&)>& function);
     Population(const Population& that);
     ~Population() = default;
 
+    void init(double start_radius);
 
     //Accessors
     inline int getPopulationSize()  const { return _population_size; }
     inline double getMutationRate() const { return _mutation_rate; }
     inline double getAlphaRadius()  const { return _alpha_radius; }
 
-    void evolve(int generations = 1, int starting_gen = 0);
+    void evolve(int generations = std::numeric_limits<int>::max(), int starting_gen = 0);
 
 
     double fitPopulation();
     double populationFitness();
 
     //summary of population's history
-    //void summary();
-    //summary of population's current generation
-    void summaryGeneration(double gen[8]);
-    void summaryGeneration(int prev_gen_no, double old_gen[8], double new_gen[8]);
-
+    void summary() const;
 
 
     //Operators
@@ -91,7 +94,6 @@ public:
     //Other function
     void sort(bool descending = false);
     void clear();
-
 
 
 };

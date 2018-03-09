@@ -9,8 +9,6 @@
 #include <random>
 
 #include "World.h"
-#include <complex>
-
 
 
 
@@ -35,14 +33,12 @@ int main() {
 
 
     std::function<double(Individual&)> fitFunct = [](Individual& x){
-        //std::complex<double> temp = x.getChromosome();
-        //std::complex<double> output = std::pow(temp, 2) + 1.0;
-
         return std::abs(std::pow(x.getChromosome(), 2) + 1.0);
     };
 
     std::cout << "Creating population\n";
-    Population mPop(100, 0.25, 5, fitFunct);
+    Population mPop(50, 0.25, 10, 100, fitFunct);
+
     std::cout << "Finished creating population\n";
     std::cout << "Fitting the population based on fitness function\n";
     mPop.sort();
@@ -57,7 +53,8 @@ int main() {
 
 
     std::cout << "\n\n\t::EVOLVING::\n\n";
-    mPop.evolve(100);
+    mPop.evolve();
+    //mPop.summary();
 
 
 
