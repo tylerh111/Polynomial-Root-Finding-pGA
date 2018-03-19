@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="Polynomial_Root_Finding_pGA"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Polynomial_Root_Finding_pGA">
+				<Option output="/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/cmake-build-debug/Polynomial_Root_Finding_pGA" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/cmake-build-debug/Makefile&quot;  VERBOSE=1 Polynomial_Root_Finding_pGA"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Polynomial_Root_Finding_pGA/fast">
+				<Option output="/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/cmake-build-debug/Polynomial_Root_Finding_pGA" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/cmake-build-debug/Makefile&quot;  VERBOSE=1 Polynomial_Root_Finding_pGA/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Local.cpp">
+			<Option target="Polynomial_Root_Finding_pGA"/>
+		</Unit>
+		<Unit filename="/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Local.h">
+			<Option target="Polynomial_Root_Finding_pGA"/>
+		</Unit>
+		<Unit filename="/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/World.h">
+			<Option target="Polynomial_Root_Finding_pGA"/>
+		</Unit>
+		<Unit filename="/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/World/Individual.cpp">
+			<Option target="Polynomial_Root_Finding_pGA"/>
+		</Unit>
+		<Unit filename="/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/World/Individual.h">
+			<Option target="Polynomial_Root_Finding_pGA"/>
+		</Unit>
+		<Unit filename="/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/World/Population.cpp">
+			<Option target="Polynomial_Root_Finding_pGA"/>
+		</Unit>
+		<Unit filename="/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/World/Population.h">
+			<Option target="Polynomial_Root_Finding_pGA"/>
+		</Unit>
+		<Unit filename="/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/main.cpp">
+			<Option target="Polynomial_Root_Finding_pGA"/>
+		</Unit>
+		<Unit filename="/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

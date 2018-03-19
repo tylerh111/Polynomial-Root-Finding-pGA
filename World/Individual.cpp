@@ -94,7 +94,3 @@ std::ostream& operator<<(std::ostream& out, const Individual& c) {
 
 
 
-
-
-
-

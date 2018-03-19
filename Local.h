@@ -45,6 +45,7 @@ int get_rand(int low_bound = 0, int up_bound = 0, bool is_low_incl = true, bool 
 
 
 
+/*
 double get_rand(double lower_bound = 0.0, double upper_bound = std::numeric_limits<double>::max()){
 
     std::default_random_engine generator;
@@ -55,9 +56,61 @@ double get_rand(double lower_bound = 0.0, double upper_bound = std::numeric_limi
     return distribution(generator) - offset;
 }
 
+*/
+
+/*class myrandom{
+private:
+    static std::mt19937_64 generator;
+    static bool isSeeded;
+    myrandom() = default;
+    ~myrandom() = default;
+
+    static myrandom* instance;
+
+public:
+    static void getInstance(){
+        if (instance == nullptr){
+
+        }
+    }
+
+    static void seedGenerator(unsigned long seed) {
+        generator.seed(seed);
+        isSeeded = true;
+    }
+
+    static double getRandUniformDist(double lower, double upper) {
+        if (!isSeeded){
+            std::cout << "we are seeding" << std::endl;
+            generator.seed((unsigned long) std::time(nullptr));
+            isSeeded = true;
+        }
+        std::uniform_real_distribution<double> distribution(lower, upper);
+        return distribution(generator);
+    }
+
+    static double getRandNormalDist(double lower, double upper) {
+        if (!isSeeded){
+            std::cout << "we are seeding" << std::endl;
+            generator.seed((unsigned long) std::time(nullptr));
+            isSeeded = true;
+        }
+        std::normal_distribution<double> distribution(lower, upper);
+        return distribution(generator);
+    }
+};*/
 
 
+namespace mRandom {
 
+    extern std::mt19937_64 generator;
+    extern bool isSeeded;
+
+    extern void seedGenerator(unsigned long seed);
+
+    extern double getRandUniformDist(double lower, double upper);
+    extern double getRandNormalDist(double lower, double upper);
+}
 
 
 

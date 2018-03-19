@@ -24,6 +24,9 @@ private:
     //range for mutation
     double _alpha_radius;
 
+    //accepted error
+    double _accepted_error;
+
     int _generation;
 
     //hide default population constructor
@@ -44,6 +47,7 @@ private:
 protected:
 
     explicit Population(int pop_size);
+    Population(int pop_size, std::function<double(Individual&)>& function);
 
 
     //Genetic operators
@@ -54,6 +58,7 @@ protected:
 
     bool checkSolution() const;
     bool checkConvergence() const;
+    bool checkConvergence2() const;
     void handleConvergence();
 
     //modify population
@@ -64,8 +69,13 @@ protected:
 public:
 
     //Constructors
-    Population(int pop_size, double mut_rate, double mut_radius, double start_radius,
+    Population(int pop_size,
+               double mut_rate,
+               double mut_radius,
+               double start_radius,
+               double accepted_error,
                std::function<double(Individual&)>& function);
+
     Population(const Population& that);
     ~Population() = default;
 
@@ -91,9 +101,13 @@ public:
 
     Individual& operator[] (int ndx);
 
+    friend std::ostream& operator<<(std::ostream &out, const Population &c);
+
+
     //Other function
     void sort(bool descending = false);
     void clear();
+
 
 
 };

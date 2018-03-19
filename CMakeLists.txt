@@ -10,6 +10,6 @@ set(SOURCE_FILES
     World/Population.h
     World.h
     Local.h
-    main.cpp)
+    main.cpp Local.cpp)
 
 add_executable(Polynomial_Root_Finding_pGA ${SOURCE_FILES})

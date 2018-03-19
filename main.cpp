@@ -9,7 +9,7 @@
 #include <random>
 
 #include "World.h"
-
+#include "Local.h"
 
 
 int main() {
@@ -29,15 +29,29 @@ int main() {
 
     std::cout << "\n\n";*/
 
+    //std::cout << "what? " << std::pow(0, 0) << std::endl;
 
 
+    mRandom::seedGenerator(0);
 
-    std::function<double(Individual&)> fitFunct = [](Individual& x){
-        return std::abs(std::pow(x.getChromosome(), 2) + 1.0);
+    std::function<double(Individual&)> fitFunct = [](Individual& indv){
+        std::complex<double> z = indv.getChromosome();
+        return std::abs(
+                //std::pow(z, 2) + 1.0
+                //(z.real() == 0 && z.imag == 0) ? 1.0 : std::pow(z, z)
+                3.1415 * std::pow(z, 16)
+                + 12.0 * std::pow(z, 10)
+                + 2.0 * std::pow(z, 5)
+                + 2.0 * std::pow(z, 4)
+                + 3.0 * std::pow(z, 3)
+                + 4.0 * std::pow(z, 2)
+                + 2.0 * z
+                + 2.0
+        );
     };
 
     std::cout << "Creating population\n";
-    Population mPop(50, 0.25, 10, 100, fitFunct);
+    Population mPop(25000, 0.25, 10, 2500, 1e-3,fitFunct);
 
     std::cout << "Finished creating population\n";
     std::cout << "Fitting the population based on fitness function\n";

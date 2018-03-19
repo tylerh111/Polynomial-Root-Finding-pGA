@@ -7,7 +7,7 @@
 #include <iomanip>
 #include "Population.h"
 
-
+#include "../Local.h"
 
 
 
@@ -18,6 +18,7 @@ Population::Population(int pop_size) {
     this->_population_size = pop_size;
     this->_mutation_rate = 0;
     this->_alpha_radius = 0;
+    this->_accepted_error = 0;
     this->_generation = 0;
 
     this->_fitness_function = nullptr;
@@ -27,18 +28,34 @@ Population::Population(int pop_size) {
 }
 
 
+Population::Population(int pop_size, std::function<double(Individual &)> &function) {
+    if (pop_size < 3) throw _pop_size_ex;
 
-Population::Population(int pop_size, double mut_rate, double mut_radius, double start_radius, std::function<double(Individual&)>& function){
+    this->_population_size = pop_size;
+    this->_mutation_rate = 0;
+    this->_alpha_radius = 0;
+    this->_accepted_error = 0;
+    this->_generation = 0;
+
+    this->_fitness_function = function;
+
+    this->_population = std::vector<Individual>((unsigned long) pop_size);
+
+}
+
+
+
+Population::Population(int pop_size, double mut_rate, double mut_radius, double start_radius, double accepted_error, std::function<double(Individual&)>& function){
     if (pop_size < 3) throw _pop_size_ex;
 
     this->_population_size = pop_size;
     this->_mutation_rate = mut_rate;
     this->_alpha_radius = mut_radius;
+    this->_accepted_error = accepted_error;
     this->_generation = 0;
 
     this->_fitness_function = function;
 
-    //this->_rng.seed((unsigned long) std::time(nullptr));
 
     this->_population = std::vector<Individual>((unsigned long) pop_size);
     init(start_radius);
@@ -67,14 +84,11 @@ Population::Population(const Population& that) {
 
 
 void Population::init(double start_radius){
-    double offset = start_radius - (-start_radius);
-    std::mt19937_64 gen;
-    gen.seed((unsigned long) std::time(nullptr));
-    std::uniform_real_distribution<double> distribution(0.0, offset);
+    double offset = start_radius;
 
     for (int i = 0; i < _population_size; i++) {
-        //_population[i] = Individual(distribution(_rng) - offset, distribution(_rng) - offset);
-        _population[i] = Individual(distribution(gen) - offset, distribution(gen) - offset);
+        _population[i] = Individual(mRandom::getRandUniformDist(0.0, 2*offset) - offset,
+                                    mRandom::getRandUniformDist(0.0, 2*offset) - offset);
         _population[i].setFitness(_fitness_function(_population[i]));
     }
 }
@@ -113,17 +127,12 @@ void Population::select(Individual* parents[2]) {
     for (int i = 1; i < POP_CAP - 1; i++) accumulated[i] = accumulated[i - 1] + probability[i];
 
 
-
-    std::default_random_engine _rng;
-    std::uniform_real_distribution<double> distribution(0.0, 1.0);
-
     //for each parent (2)
     for (int ndx = 0; ndx < 2; ndx++) {
         //do while the parents are equal to each other
         do {
             //get random number [0, 1] from uniform distribution to pick from population
-            //double num = get_rand(0.0, 1.0);
-            double num = distribution(_rng);
+            double num = mRandom::getRandUniformDist(0.0, 1.0);
 
             //pick from population by setting i where num <= accumulated[i]
             int i = 0;
@@ -156,7 +165,7 @@ void Population::crossover(Individual offspring[2], Individual* parents[2]) {
     Individual ret[2];
 
     std::complex<double> p1 = parents[0]->getChromosome();
-    std::complex<double> p2 = parents[0]->getChromosome();
+    std::complex<double> p2 = parents[1]->getChromosome();
 
     std::complex<double> diff = p1 - p2;
     double abs_diff = std::abs(diff);
@@ -166,18 +175,13 @@ void Population::crossover(Individual offspring[2], Individual* parents[2]) {
     double imag_lower = std::min(p1.imag(), p2.imag()) - abs_diff;
     double imag_upper = std::max(p1.imag(), p2.imag()) + abs_diff;
 
-    std::mt19937_64 gen;
-    gen.seed((unsigned long) std::time(nullptr));
-
-    std::uniform_real_distribution<double> dist_real(real_lower, real_upper);
-    std::uniform_real_distribution<double> dist_imag(imag_lower, imag_upper);
-
 
     //geofencing
-    //ret[0] = Individual(dist_real(_rng), dist_imag(_rng));
-    //ret[1] = Individual(dist_real(_rng), dist_imag(_rng));
-    ret[0] = Individual(dist_real(gen), dist_imag(gen));
-    ret[1] = Individual(dist_real(gen), dist_imag(gen));
+    ret[0] = Individual(mRandom::getRandUniformDist(real_lower, real_upper),
+                        mRandom::getRandUniformDist(imag_lower, imag_upper));
+    ret[1] = Individual(mRandom::getRandUniformDist(real_lower, real_upper),
+                        mRandom::getRandUniformDist(imag_lower, imag_upper));
+
 
     ret[0].setFitness(_fitness_function(ret[0]));
     ret[1].setFitness(_fitness_function(ret[1]));
@@ -205,47 +209,49 @@ void Population::crossover(Individual offspring[2], Individual* parents[2]) {
 
 void Population::mutate(Individual &x){
 
-    std::mt19937_64 gen;
-    gen.seed((unsigned long) std::time(nullptr));
-    std::uniform_real_distribution<double> distribution(0.0, 1.0);
-
-    if (distribution(gen) <= _mutation_rate) {
+    if (mRandom::getRandUniformDist(0.0, 1.0) <= _mutation_rate) {
         double new_real;
         double new_imag;
 
-        std::uniform_real_distribution<double> dist_complex(0.0, _alpha_radius);
+        //std::uniform_real_distribution<double> dist_complex(0.0, _alpha_radius);
 
         //pick numbers within range
         do {
-            new_real = dist_complex(gen);
-            new_imag = dist_complex(gen);
+            new_real = mRandom::getRandUniformDist(0.0, _alpha_radius);
+            new_imag = mRandom::getRandUniformDist(0.0, _alpha_radius);
+
         } while (std::pow(new_real, 2) + std::pow(new_imag, 2) <= std::pow(_alpha_radius, 2));
 
 
 
         x.setReal(new_real + x.getReal());
         x.setImaginary(new_imag + x.getImaginary());
+        x.setFitness(_fitness_function(x));
     }
 
 }
 
 
 void Population::replace(Population &replacement){
-    int i = replacement._population_size - 1;
-    int j = 0;
 
-    while (j < replacement._population_size){
-        _population[i++] = replacement[j++];
-    }
+    //add the new individuals
+    for (int i = 0; i < replacement._population_size; i++)
+        _population.push_back(replacement[i]);
+
+    //sort from least to greatest
+    sort();
+
+    //remove the worst
+    for (int i = 0; i < replacement._population_size; i++)
+        _population.pop_back();
+
 }
 
 
 
 
 bool Population::checkSolution() const {
-    for (int i = 0; i < _population_size; i++)
-        if (_population[i].getFitness() == 0) return true;
-    return false;
+    return _population[0].getFitness() <= _accepted_error;
 }
 
 
@@ -253,7 +259,7 @@ bool Population::checkConvergence() const {
     double recur_real = _population[0].getReal();
     double recur_imag = _population[0].getImaginary();
 
-    for (int i = 0; i < _population_size; i++){
+    for (int i = 1; i < _population_size; i++){
         if (recur_real != _population[i].getReal() &&
             recur_imag != _population[i].getImaginary())
             return false;
@@ -262,13 +268,19 @@ bool Population::checkConvergence() const {
     return true;
 }
 
+bool Population::checkConvergence2() const {
 
+    double recur_fitness = _population[0].getFitness();
+
+    for (int i = 1; i < _population_size; i++){
+        if (recur_fitness != _population[i].getFitness())
+            return false;
+    }
+
+    return true;
+}
 
 void Population::handleConvergence() {
-
-    std::mt19937_64 gen;
-    gen.seed((unsigned long) std::time(nullptr));
-    std::uniform_real_distribution<double> dist_complex(0.0, _alpha_radius);
 
     for (int i = 0; i < _population_size; i++) {
         double new_real;
@@ -276,8 +288,8 @@ void Population::handleConvergence() {
 
         //pick numbers within range
         do {
-            new_real = dist_complex(gen);
-            new_imag = dist_complex(gen);
+            new_real = mRandom::getRandUniformDist(0.0, _alpha_radius);
+            new_imag = mRandom::getRandUniformDist(0.0, _alpha_radius);
         } while (std::pow(new_real, 2) + std::pow(new_imag, 2) <= std::pow(_alpha_radius, 2));
 
 
@@ -306,6 +318,14 @@ void Population::remove(Individual &x) {
 
 
 
+bool shouldPrint(int gen){
+    return (gen < 10) ||
+           ((gen < 100) && (gen % 10 == 0)) ||
+           ((gen < 1000) && (gen % 100 == 0)) ||
+           ((gen < 10000) && (gen % 1000 == 0)) ||
+           (gen % 10000 == 0);
+}
+
 
 void Population::evolve(int generations, int starting_gen) {
 
@@ -315,12 +335,8 @@ void Population::evolve(int generations, int starting_gen) {
         sort();
 
         //print summary
-        if ((gen < 10) ||
-            ((gen < 100) && (gen % 10 == 0)) ||
-            ((gen < 1000) && (gen % 100 == 0)) ||
-            ((gen < 10000) && (gen % 1000 == 0)) ||
-            (gen % 10000 == 0))
-            summary();
+        //if (shouldPrint(gen)) summary();
+        summary();
 
         //check for a root
         if (checkSolution()) break;
@@ -338,7 +354,7 @@ void Population::evolve(int generations, int starting_gen) {
         int new_pop_size = _population_size / 3;
         if (new_pop_size % 2 != 0) new_pop_size++;
 
-        Population new_generation(new_pop_size);
+        Population new_generation(new_pop_size, _fitness_function);//, _fitness_function);
 
         for (int i = 0; i < (_population_size / 3); i+=2) {
 
@@ -356,10 +372,17 @@ void Population::evolve(int generations, int starting_gen) {
 
         }
 
+        //new_generation.fitPopulation();
+
         replace(new_generation);
 
         _generation++;
     }
+
+
+    std::cout << "solution found in generation " << _generation << std::endl;
+    std::cout << "solution = " << _population[0] << std::endl;
+    std::cout << "population = [\n" << *this << "\n]" << std::endl;
 
 }
 
@@ -401,14 +424,14 @@ void Population::summary() const {
               << std::fixed << std::setw(14) << "75% |"
               << std::fixed << std::setw(13) << "Max\n";
     std::cout << "---------------------------------------------------------------------------------------------------------------\n";
-    std::cout << std::fixed << std::setw(12) << std::setprecision(3) <<_population_size << " | "
-              << std::fixed << std::setw(11) << std::setprecision(3) << mean << " | "
-              << std::fixed << std::setw(11) << std::setprecision(3) << std_dev<< " | "
-              << std::fixed << std::setw(11) << std::setprecision(3) << _population[0].getFitness() << " | "
-              << std::fixed << std::setw(11) << std::setprecision(3) << fir_q << " | "
-              << std::fixed << std::setw(11) << std::setprecision(3) << sec_q << " | "
-              << std::fixed << std::setw(11) << std::setprecision(3) << thr_q << " | "
-              << std::fixed << std::setw(11) << std::setprecision(3) << _population[_population_size-1].getFitness() << "\n";
+    std::cout << std::scientific << std::setw(12) << std::setprecision(3) <<_population_size << " | "
+              << std::scientific << std::setw(11) << std::setprecision(3) << mean << " | "
+              << std::scientific << std::setw(11) << std::setprecision(3) << std_dev<< " | "
+              << std::scientific << std::setw(11) << std::setprecision(3) << _population[0].getFitness() << " | "
+              << std::scientific << std::setw(11) << std::setprecision(3) << fir_q << " | "
+              << std::scientific << std::setw(11) << std::setprecision(3) << sec_q << " | "
+              << std::scientific << std::setw(11) << std::setprecision(3) << thr_q << " | "
+              << std::scientific << std::setw(11) << std::setprecision(3) << _population[_population_size-1].getFitness() << "\n";
     std::cout << "===============================================================================================================\n\n";
 
 }
@@ -453,4 +476,20 @@ void Population::sort(bool descending){
 
 void Population::clear() {
     _population.clear();
+}
+
+
+
+
+
+std::ostream& operator<<(std::ostream &out, const Population &c) {
+
+    for (int i = 0; i < 100/*c._population_size*/; i+=10){
+        out << std::fixed << std::setw(14) << i
+            << std::fixed << std::setw(14) << c._population[i].getReal()
+            << std::fixed << std::setw(14) << " + " << c._population[i].getImaginary() << "i ::: "
+            << std::fixed << std::setw(14) << c._population[i].getFitness() << std::endl;
+    }
+
+    return out;
 }
