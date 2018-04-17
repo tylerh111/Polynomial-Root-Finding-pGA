@@ -1,4 +1,4 @@
-#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
 
 #IncludeRegexScan: ^.*$
 
@@ -21,6 +21,32 @@ limits
 -
 ctime
 -
+World/Individual.h
+/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/World/Individual.h
+
+/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Processes/Master.cpp
+Master.h
+/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Processes/Master.h
+
+/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Processes/Master.h
+Process.h
+/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Processes/Process.h
+
+/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Processes/Process.cpp
+Process.h
+/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Processes/Process.h
+
+/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Processes/Process.h
+mpi.h
+-
+
+/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Processes/Worker.cpp
+Worker.h
+/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Processes/Worker.h
+
+/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Processes/Worker.h
+Process.h
+/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Processes/Process.h
 
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/World.h
 World/Individual.h
@@ -81,14 +107,20 @@ Individual.h
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/main.cpp
 iostream
 -
-typeinfo
--
 cmath
 -
 random
 -
+mpi.h
+/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/mpi.h
 World.h
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/World.h
 Local.h
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Local.h
+Processes/Process.h
+/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Processes/Process.h
+Processes/Master.h
+/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Processes/Master.h
+Processes/Worker.h
+/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Processes/Worker.h
 

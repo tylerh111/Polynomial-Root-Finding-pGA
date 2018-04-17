@@ -1,2 +1,2 @@
 Options: 
-CMake: 3.8.2@/home/tdh5188/JetBrains/clion-2017.2.1/bin/cmake/bin/cmake
+CMake: 3.8.2@/home/tdh5188/JetBrains/clion-2017.2.2/bin/cmake/bin/cmake

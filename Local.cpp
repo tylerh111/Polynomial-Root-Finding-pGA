@@ -23,3 +23,22 @@ double mRandom::getRandNormalDist(double lower, double upper) {
     return distribution(generator);
 }
 
+
+
+std::function<double(Individual&)> mPolynomial::getPolynomial(int degree, char** coefficient) {
+    return [=](Individual& ind) -> double {
+        std::complex<double> z = ind.getChromosome();
+        std::complex<double> retVal(0,0);
+        for (int i = degree, j = 1; j < degree + 2; i--, j++)
+            retVal = retVal + (double) atoi(coefficient[j]) * std::pow(z, i); // NOLINT
+
+        return std::abs(retVal);
+    };
+}
+
+
+
+
+
+
+

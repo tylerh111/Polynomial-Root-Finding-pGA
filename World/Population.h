@@ -7,10 +7,13 @@
 #include <random>
 
 #include "Individual.h"
+
+
 class Individual;
 
 class Population {
 private:
+
     std::vector<Individual> _population;
 
     int _population_size;
@@ -68,6 +71,13 @@ protected:
 
 public:
 
+    const static int POPULATION_SIZE = 2500;
+    const static double MUTATION_RATE = .25;
+    const static double MUTATION_RADIUS = 1;
+    const static double START_RADIUS = 1;
+    const static double ACCEPTED_ERROR = 1;
+
+
     //Constructors
     Population(int pop_size,
                double mut_rate,
@@ -86,6 +96,7 @@ public:
     inline double getMutationRate() const { return _mutation_rate; }
     inline double getAlphaRadius()  const { return _alpha_radius; }
 
+    //TODO: change to do only one generation
     void evolve(int generations = std::numeric_limits<int>::max(), int starting_gen = 0);
 
 

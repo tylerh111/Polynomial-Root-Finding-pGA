@@ -1,4 +1,4 @@
-/home/tdh5188/JetBrains/clion-2017.2.1/bin/cmake/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA
+/home/tdh5188/JetBrains/clion-2017.2.2/bin/cmake/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA
 -- Configuring done
 -- Generating done
 -- Build files have been written to: /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/cmake-build-debug
