@@ -10,7 +10,7 @@
 
 #include "Individual.h"
 
-//class Individual;
+class Individual;
 
 class Population {
 private:
@@ -35,6 +35,7 @@ private:
 
     //fitness function
     std::function<double(const Individual&)> _fitness_function;
+    static const std::function<double(const Individual&)>& DEF_FITNESS_FUNCTION;
 
     //range for crossover
     //double _minor_axis; //ellipse b value
@@ -73,7 +74,7 @@ protected:
 public:
 
     //if population is not big enough
-    const static class PopulationSizeException : public std::runtime_error{
+    class PopulationSizeException : public std::runtime_error{
     public:
         explicit PopulationSizeException(const std::string &msg = "Population size is too small")
                 : runtime_error(msg) {}
@@ -81,31 +82,33 @@ public:
 
 
     //status codes on evolve()
-    const static int STATUS_NOT_FOUND = 0;
-    const static int STATUS_FOUND     = 1;
-    const static int STATUS_CONVERGED = 2;
+    enum STATUS {
+        NOT_FOUND = 0,
+        FOUND     = 1,
+        CONVERGED = 2};
+
 
     //getSummary() indices and size
-    const static int SUM_NDX_MEAN     = 0;
-    const static int SUM_NDX_STD_DEV  = 1;
-    const static int SUM_NDX_MIN      = 2;
-    const static int SUM_NDX_FIRST_Q  = 3;
-    const static int SUM_NDX_SECOND_Q = 4;
-    const static int SUM_NDX_THIRD_Q  = 5;
-    const static int SUM_NDX_MAX      = 6;
-    const static int SUM_SIZE         = 7;
+    static const int SUM_NDX_MEAN     = 0;
+    static const int SUM_NDX_STD_DEV  = 1;
+    static const int SUM_NDX_MIN      = 2;
+    static const int SUM_NDX_FIRST_Q  = 3;
+    static const int SUM_NDX_SECOND_Q = 4;
+    static const int SUM_NDX_THIRD_Q  = 5;
+    static const int SUM_NDX_MAX      = 6;
+    static const int SUM_SIZE         = 7;
 
     //default values for hyper parameters
-    const static double        DEF_ACCEPTED_ERROR   = 0;
-    const static double        DEF_MUTATION_RATE    = 0;
-    const static double        DEF_MUTATION_RADIUS  = 0;
-    const static double        DEF_START_RADIUS     = 0;
-    const static unsigned long DEF_START_GENERATION = 0;
+    static constexpr double    DEF_ACCEPTED_ERROR   = 0;
+    static constexpr double    DEF_MUTATION_RATE    = 0;
+    static constexpr double    DEF_MUTATION_RADIUS  = 0;
+    static constexpr double    DEF_START_RADIUS     = 0;
+    static const unsigned long DEF_START_GENERATION = 0;
 
 
     //Constructors
     explicit Population(unsigned long pop_size,
-                        std::function<double(const Individual&)>& function,
+                        std::function<double(const Individual&)> function,
                         double accepted_error   = DEF_ACCEPTED_ERROR,
                         double mut_rate         = DEF_MUTATION_RATE,
                         double mut_radius       = DEF_MUTATION_RADIUS,
@@ -130,8 +133,8 @@ public:
     inline void setMutationRate(double new_mut_rate)          { _mutation_rate = new_mut_rate;     }
     inline void setMutationRadius(double new_mut_radius)      { _mutation_radius = new_mut_radius; }
     inline void setAcceptedError(double new_acpt_val)         { _accepted_error = new_acpt_val;    }
-    inline void setFitnessFunction(std::function<double(const Individual)>& new_fit_funct)
-                                                              { _fitness_function = new_fit_funct; }
+    inline void setFitnessFunction(std::function<double(const Individual&)> new_fit_funct)
+                                                              { _fitness_function = std::move(new_fit_funct); }
 
 
 
@@ -141,7 +144,7 @@ public:
 
 
 
-    int  evolve();
+    STATUS evolve();
     //void evolveLoop(int generations = std::numeric_limits<int>::max(), int starting_gen = 0);
 
 

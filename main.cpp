@@ -40,6 +40,7 @@ int main(int argc, char* argv[]) {
 
     if (pid == Process::CLIENT_PID){
         std::cout << "client process" << std::endl;
+        std::cout << "pname = " << pname << std::endl;
         Master master (pid, pname);
     }
     else{

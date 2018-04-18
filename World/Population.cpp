@@ -11,16 +11,19 @@
 
 
 
+const std::function<double(const Individual&)>& Population::DEF_FITNESS_FUNCTION = [](const Individual&)->double { return 0; };
+
+
 // CONSTRUCTORS
-Population::Population(unsigned long pop_size) : Population(pop_size, { }) { }
+Population::Population(unsigned long pop_size) : Population(pop_size, const_cast<std::function<double(const Individual&)>&>(DEF_FITNESS_FUNCTION)) { }
 
 Population::Population(unsigned long pop_size,
-                       std::function<double(const Individual&)>& function,
-                       double accepted_error          = DEF_ACCEPTED_ERROR,
-                       double mut_rate                = DEF_MUTATION_RATE,
-                       double mut_radius              = DEF_MUTATION_RADIUS,
-                       double start_radius            = DEF_START_RADIUS,
-                       unsigned long start_generation = DEF_START_GENERATION) {
+                       std::function<double(const Individual&)> function,
+                       double accepted_error,
+                       double mut_rate,
+                       double mut_radius,
+                       double start_radius,
+                       unsigned long start_generation) {
     if (pop_size < 3) throw PopulationSizeException();
 
     this->_population_size = pop_size;
@@ -29,7 +32,7 @@ Population::Population(unsigned long pop_size,
     this->_mutation_radius = mut_radius;
     this->_generation = start_generation;
 
-    this->_fitness_function = function;
+    this->_fitness_function = std::move(function);
 
     this->_population = std::vector<Individual>(pop_size);
     init(start_radius);
@@ -64,10 +67,6 @@ Population::Population(const Population& that) {
 
 
 
-
-
-
-
 void Population::init(double start_radius){
     double offset = std::abs(start_radius);
 
@@ -82,6 +81,10 @@ void Population::init(double start_radius){
 
 
 
+/**
+ *
+ * @param parents
+ */
 void Population::select(Individual* parents[2]) {
     Individual* ret[2];	          //ret    := used to hold ret values until end to assign parents
     Individual* not_me = nullptr; //not_me := used to avoid selecting same member twice
@@ -316,9 +319,9 @@ void Population::remove(Individual &x) {
 
 
 
-int Population::evolve(){
+Population::STATUS Population::evolve(){
 
-    int status = 0;
+    STATUS status = NOT_FOUND;
 
     //sort population
     sort();
@@ -327,11 +330,11 @@ int Population::evolve(){
     printSummary();
 
     //check for a root
-    if (checkSolution()) return 1;
+    if (checkSolution()) return FOUND;
 
     //check & handle convergence
     if (checkChromosomeConvergence()) {
-        status = 2;
+        status = CONVERGED;
         handleConvergence();
     }
 
@@ -362,6 +365,8 @@ int Population::evolve(){
     replace(new_generation);
 
     _generation++;
+
+    _combined_population = _population;
 
     return status;
 }
@@ -545,7 +550,7 @@ Individual& Population::operator[] (int ndx) {
 }
 
 
-void Population::sort(bool descending = false){
+void Population::sort(bool descending){
     if (descending) std::sort(_population.begin(), _population.end(), std::greater<Individual>());
     else            std::sort(_population.begin(), _population.end(), std::less<Individual>());
 }
