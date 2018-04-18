@@ -44,12 +44,6 @@ private:
     Population() = default;
 
 
-    //if population is not big enough
-    static class PopulationSizeException : public std::runtime_error{
-    public:
-        explicit PopulationSizeException(const std::string &msg = "Population size is too small")
-                : runtime_error(msg) {}
-    };
 
 
 protected:
@@ -77,6 +71,14 @@ protected:
 
 
 public:
+
+    //if population is not big enough
+    const static class PopulationSizeException : public std::runtime_error{
+    public:
+        explicit PopulationSizeException(const std::string &msg = "Population size is too small")
+                : runtime_error(msg) {}
+    };
+
 
     //status codes on evolve()
     const static int STATUS_NOT_FOUND = 0;

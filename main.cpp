@@ -49,6 +49,15 @@ int main(int argc, char* argv[]) {
     }
 
 
+    /*try{
+        std::cout << "hello" << std::endl;
+    }
+    catch(Population::PopulationSizeException &e){
+        std::cout << e.what() << std::endl;
+    }*/
+
+
+
 /*
 
     std::cout << "hello world from Polynomial-Root-Finding-pGA" << std::endl;
