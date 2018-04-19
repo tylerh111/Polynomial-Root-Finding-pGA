@@ -10,6 +10,7 @@
 
 class Population;
 class Individual;
+class Polynomial;
 
 
 

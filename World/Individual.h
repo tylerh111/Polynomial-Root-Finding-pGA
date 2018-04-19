@@ -1,17 +1,15 @@
 #ifndef POLYNOMIAL_ROOT_FINDING_PGA_INDIVIDUAL_H
 #define POLYNOMIAL_ROOT_FINDING_PGA_INDIVIDUAL_H
 
-#include "Population.h"
-
 #include <iostream>
 #include <complex>
 #include <cmath>
 
 
-
 class Individual {
-    friend class Population;
 private:
+    friend class Population;
+
     //Chromosomes
     double _real;
     double _imaginary;

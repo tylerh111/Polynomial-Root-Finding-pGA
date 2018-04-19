@@ -11,34 +11,33 @@
 
 
 
-const std::function<double(const Individual&)>& Population::DEF_FITNESS_FUNCTION = [](const Individual&)->double { return 0; };
 
 
 // CONSTRUCTORS
-Population::Population(unsigned long pop_size) : Population(pop_size, const_cast<std::function<double(const Individual&)>&>(DEF_FITNESS_FUNCTION)) { }
+Population::Population(unsigned long pop_size) : Population(pop_size, Polynomial(nullptr)) { }
 
 Population::Population(unsigned long pop_size,
-                       std::function<double(const Individual&)> function,
+                       Polynomial function,
                        double accepted_error,
                        double mut_rate,
                        double mut_radius,
-                       double start_radius,
                        unsigned long start_generation) {
     if (pop_size < 3) throw PopulationSizeException();
 
+    this->_population = std::vector<Individual>(pop_size);
     this->_population_size = pop_size;
+
+    this->_combined_population = _population;
+    this->_combined_population_size = _population_size;
+
     this->_accepted_error = accepted_error;
     this->_mutation_rate = mut_rate;
     this->_mutation_radius = mut_radius;
     this->_generation = start_generation;
 
-    this->_fitness_function = std::move(function);
+    this->_fitness_function = function;
 
-    this->_population = std::vector<Individual>(pop_size);
-    init(start_radius);
 
-    this->_combined_population = _population;
-    this->_combined_population_size = _population_size;
 }
 
 Population::Population(const Population& that) {
@@ -190,7 +189,6 @@ void Population::mutate(Individual &x){
 
         x.setReal(new_real + x.getReal());
         x.setImaginary(new_imag + x.getImaginary());
-        x.setFitness(_fitness_function(x));
     }
 
 }
@@ -319,6 +317,11 @@ void Population::remove(Individual &x) {
 
 
 
+
+
+
+
+
 Population::STATUS Population::evolve(){
 
     STATUS status = NOT_FOUND;
@@ -356,11 +359,14 @@ Population::STATUS Population::evolve(){
         mutate(offspring[0]);
         mutate(offspring[1]);
 
-        new_generation._population.at(i)     = offspring[0];
-        new_generation._population.at(i + 1) = offspring[1];
+        new_generation._population.push_back(offspring[0]);
+        new_generation._population.push_back(offspring[1]);
 
+        //new_generation._population.at(i)     = offspring[0];
+        //new_generation._population.at(i + 1) = offspring[1];
     }
 
+    fitPopulation(new_generation);
 
     replace(new_generation);
 
@@ -527,6 +533,14 @@ double Population::fitPopulation() {
     }
     return total / _population_size;
 }
+double Population::fitPopulation(Population& population) {
+    double total = 0;
+    for (Individual& ndiv : population._population) {
+        ndiv.setFitness(population._fitness_function(ndiv));
+        total += ndiv.getFitness();
+    }
+    return total / population._population_size;
+}
 
 double Population::populationFitness() {
     double total = 0;
@@ -538,7 +552,7 @@ double Population::populationFitness(const Population& pop) {
     for (Individual individual : pop._population) total += individual.getFitness();
     return total / pop._population_size;
 }
-double Population::populationFitness(const std::vector<Individual> vector) {
+double Population::populationFitness(const std::vector<Individual>& vector) {
     double total = 0;
     for (Individual individual : vector) total += individual.getFitness();
     return total / vector.size();
@@ -591,8 +605,9 @@ void Population::reset() {
 
 
 
-void Population::integration(std::vector<Individual> vector) {
+void Population::integration(const std::vector<Individual>& vector) {
     _combined_population_size += vector.size();
+    _combined_population.reserve(_combined_population_size);
     _combined_population.insert(std::end(_combined_population), std::begin(vector), std::end(vector));
 }
 

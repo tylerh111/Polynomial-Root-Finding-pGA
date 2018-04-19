@@ -1,9 +1,6 @@
 
 #include "Individual.h"
 
-#include <iostream>
-#include <complex>
-
 
 // CONSTRUCTORS
 Individual::Individual() {

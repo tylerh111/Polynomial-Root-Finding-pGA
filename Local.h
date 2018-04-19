@@ -7,6 +7,7 @@
 #include <random>
 #include <limits>
 #include <ctime>
+#include <functional>
 #include "World/Individual.h"
 
 
@@ -23,9 +24,11 @@ namespace mRandom {
 
 
 namespace mPolynomial {
-    extern std::function<double(Individual&)> getPolynomial(int degree, char** coefficients);
+    extern std::function<double(Individual&)> getPolynomial(char* filename);
 
 }
+
+
 
 
 

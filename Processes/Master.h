@@ -10,7 +10,7 @@
 
 class Master : public Process {
 public:
-    Master(int pid, std::string pname) : Process(pid, pname) { }
+    Master(int pid, std::string pname) : Process(pid, std::move(pname)) { }
     ~Master() override = default;
 
     int mainProcedure() override;

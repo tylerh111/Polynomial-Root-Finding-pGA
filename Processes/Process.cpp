@@ -4,9 +4,11 @@
 
 #include "Process.h"
 
+#include <utility>
+
 Process::Process(int pid, std::string pname) {
     this->pid = pid;
-    this->pname = pname;
+    this->pname = std::move(pname);
 }
 
 

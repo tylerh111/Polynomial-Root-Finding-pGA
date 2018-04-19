@@ -6,6 +6,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/Polynomial_Root_Finding_pGA.dir/Processes/Process.cpp.o"
   "CMakeFiles/Polynomial_Root_Finding_pGA.dir/Processes/Worker.cpp.o"
   "CMakeFiles/Polynomial_Root_Finding_pGA.dir/Processes/Master.cpp.o"
+  "CMakeFiles/Polynomial_Root_Finding_pGA.dir/World/Polynomial.cpp.o"
   "Polynomial_Root_Finding_pGA.pdb"
   "Polynomial_Root_Finding_pGA"
 )

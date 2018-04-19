@@ -1,4 +1,4 @@
-#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
 
 #IncludeRegexScan: ^.*$
 
@@ -9,6 +9,8 @@
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Local.cpp
 Local.h
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Local.h
+fstream
+-
 
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Local.h
 iostream
@@ -20,6 +22,8 @@ random
 limits
 -
 ctime
+-
+functional
 -
 World/Individual.h
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/World/Individual.h
@@ -35,6 +39,8 @@ Process.h
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Processes/Process.cpp
 Process.h
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Processes/Process.h
+utility
+-
 
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Processes/Process.h
 mpi.h
@@ -61,19 +67,27 @@ ctime
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/World/Individual.cpp
 Individual.h
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/World/Individual.h
-iostream
--
-complex
--
 
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/World/Individual.h
-Population.h
-/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/World/Population.h
 iostream
 -
 complex
 -
 cmath
+-
+
+/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/World/Polynomial.cpp
+Polynomial.h
+/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/World/Polynomial.h
+
+/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/World/Polynomial.h
+Individual.h
+/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/World/Individual.h
+complex
+-
+string
+-
+fstream
 -
 
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/World/Population.cpp
@@ -95,14 +109,20 @@ Population.h
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Local.h
 
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/World/Population.h
+utility
+-
 vector
 -
 functional
 -
 random
 -
+cstring
+-
 Individual.h
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/World/Individual.h
+Polynomial.h
+/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/World/Polynomial.h
 
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/main.cpp
 iostream

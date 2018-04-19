@@ -9,8 +9,8 @@
 #include <cstring>
 
 #include "Individual.h"
+#include "Polynomial.h"
 
-class Individual;
 
 class Population {
 private:
@@ -34,8 +34,7 @@ private:
     double _accepted_error{};
 
     //fitness function
-    std::function<double(const Individual&)> _fitness_function;
-    static const std::function<double(const Individual&)>& DEF_FITNESS_FUNCTION;
+    Polynomial _fitness_function;// = Polynomial();
 
     //range for crossover
     //double _minor_axis; //ellipse b value
@@ -50,8 +49,6 @@ private:
 protected:
 
     explicit Population(unsigned long pop_size);
-    //explicit Population(unsigned long pop_size,
-    //                    std::function<double(const Individual&)>& function);
 
     //Genetic operators
     void select(Individual* parents[2]);
@@ -108,17 +105,16 @@ public:
 
     //Constructors
     explicit Population(unsigned long pop_size,
-                        std::function<double(const Individual&)> function,
-                        double accepted_error   = DEF_ACCEPTED_ERROR,
-                        double mut_rate         = DEF_MUTATION_RATE,
-                        double mut_radius       = DEF_MUTATION_RADIUS,
-                        double start_radius     = DEF_START_RADIUS,
+                        Polynomial    function,
+                        double        accepted_error   = DEF_ACCEPTED_ERROR,
+                        double        mut_rate         = DEF_MUTATION_RATE,
+                        double        mut_radius       = DEF_MUTATION_RADIUS,
                         unsigned long start_generation = DEF_START_GENERATION);
 
     Population(const Population& that);
     ~Population() = default;
 
-    void init(double start_radius);
+    void init(double start_radius = DEF_START_RADIUS);
 
     //Accessors
     inline unsigned long getPopulationSize() const { return _population_size; }
@@ -128,18 +124,17 @@ public:
     inline double        getAcceptedError()  const { return _accepted_error;  }
 
     //Mutators
-    inline void setPopulationSize(unsigned long new_pop_size) {  _population_size = new_pop_size;  }
-    inline void setGeneration(unsigned long new_gen)          { _generation = new_gen;             }
-    inline void setMutationRate(double new_mut_rate)          { _mutation_rate = new_mut_rate;     }
-    inline void setMutationRadius(double new_mut_radius)      { _mutation_radius = new_mut_radius; }
-    inline void setAcceptedError(double new_acpt_val)         { _accepted_error = new_acpt_val;    }
-    inline void setFitnessFunction(std::function<double(const Individual&)> new_fit_funct)
-                                                              { _fitness_function = std::move(new_fit_funct); }
+    inline void setPopulationSize(unsigned long new_pop_size)       { _population_size = new_pop_size;    }
+    inline void setGeneration(unsigned long new_gen)                { _generation = new_gen;              }
+    inline void setMutationRate(double new_mut_rate)                { _mutation_rate = new_mut_rate;      }
+    inline void setMutationRadius(double new_mut_radius)            { _mutation_radius = new_mut_radius;  }
+    inline void setAcceptedError(double new_accepted_val)           { _accepted_error = new_accepted_val; }
+    inline void setFitnessFunction(const Polynomial &new_fit_funct) { _fitness_function = new_fit_funct;  }
 
 
 
     //add migrates to combined population
-    void integration(std::vector<Individual> vector);
+    void integration(const std::vector<Individual>& vector);
 
 
 
@@ -150,9 +145,10 @@ public:
 
     //set and fit population
     double fitPopulation();
+    static double fitPopulation(Population& population);
     double populationFitness();
-    double populationFitness(const std::vector<Individual> vector); // NOLINT
     static double populationFitness(const Population&);
+    double populationFitness(const std::vector<Individual>& vector);
 
 
     //summary of population's history

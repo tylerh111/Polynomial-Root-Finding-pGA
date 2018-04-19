@@ -24,6 +24,9 @@
  */
 int main(int argc, char* argv[]) {
 
+
+
+
     //mpi initialization
     int ierr, pid, size;
     char pname[MPI_MAX_PROCESSOR_NAME];
@@ -32,35 +35,33 @@ int main(int argc, char* argv[]) {
     ierr = MPI_Comm_rank(MPI_COMM_WORLD, &pid);
     ierr = MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-
     Process::setNetworkSize(size);
 
     int pnameLen;
     MPI_Get_processor_name(pname, &pnameLen);
 
-    if (pid == Process::CLIENT_PID){
-        std::cout << "client process" << std::endl;
+    Process::NetworkSizeException e = Process::NetworkSizeException();
+
+    //size must be 2 or more
+    if (size < 2) throw Process::NetworkSizeException();
+    //if we are the master node
+    if (pid == Process::MASTER_PID){
+        std::cout << "master process" << std::endl;
         std::cout << "pname = " << pname << std::endl;
         Master master (pid, pname);
     }
     else{
-        auto polynomial = mPolynomial::getPolynomial(argc - 2, argv);
+        //auto polynomial = mPolynomial::getPolynomial(argc - 2, argv);
         std::cout << "server process" << std::endl;
         Worker worker(pid, pname);
     }
 
 
-    /*try{
-        std::cout << "hello" << std::endl;
-    }
-    catch(Population::PopulationSizeException &e){
-        std::cout << e.what() << std::endl;
-    }*/
+
 
 
 
 /*
-
     std::cout << "hello world from Polynomial-Root-Finding-pGA" << std::endl;
 
     mRandom::seedGenerator(0);

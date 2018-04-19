@@ -17,7 +17,7 @@ protected:
 
 public:
     static int networkSize;
-    const static int CLIENT_PID = 0;
+    const static int MASTER_PID = 0;
 
     Process() : pid(0), pname("") { };
     Process(int pid, std::string pname);
@@ -31,6 +31,13 @@ public:
     static void setNetworkSize(int networkSize);
 
     virtual int mainProcedure() = 0;
+
+
+    class NetworkSizeException : public std::runtime_error{
+    public:
+        explicit NetworkSizeException(const std::string &msg = "Network size is too small")
+                : runtime_error(msg) {}
+    };
 
 };
 

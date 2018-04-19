@@ -3,7 +3,7 @@
 //
 
 #include "Worker.h"
-#include "../World/Population.h"
+//#include "../World/Population.h"
 
 
 int Worker::mainProcedure() {
