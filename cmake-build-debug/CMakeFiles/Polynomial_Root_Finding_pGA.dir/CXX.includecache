@@ -7,10 +7,16 @@
 #IncludeRegexTransform: 
 
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Local.cpp
+complex
+-
+cstdlib
+-
+cmath
+-
+valarray
+-
 Local.h
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Local.h
-fstream
--
 
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Local.h
 iostream
@@ -25,8 +31,12 @@ ctime
 -
 functional
 -
+complex
+-
 World/Individual.h
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/World/Individual.h
+World/Polynomial.h
+/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/World/Polynomial.h
 
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Processes/Master.cpp
 Master.h
@@ -77,6 +87,8 @@ cmath
 -
 
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/World/Polynomial.cpp
+cstring
+-
 Polynomial.h
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/World/Polynomial.h
 
@@ -102,6 +114,8 @@ cmath
 ctime
 -
 iomanip
+-
+utility
 -
 Population.h
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/World/Population.h

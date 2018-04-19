@@ -82,6 +82,10 @@ Polynomial& Polynomial::operator=(Polynomial &&other) noexcept {
 }
 
 
+
+
+
+
 std::string Polynomial::to_string() const {
     if (filename.empty()) return ""; // throw an exception instead
     std::stringstream ss;
@@ -99,14 +103,13 @@ std::string Polynomial::to_string() const {
 
 
 
-double Polynomial::operator()(const Individual &individual) const {
-    if (filename.empty()) return 0; //throw an exception instead
-    std::complex<double> z = individual.getChromosome();
-    std::complex<double> retVal(0,0);
+std::complex<double> Polynomial::operator()(const std::complex<double>& input) const {
+    if (filename.empty()) return {0,0}; //throw an exception instead
+    auto z = std::complex<double>(0,0);
     for (int i = degree, j = 0; j < coefficients_len; i--, j++)
-        retVal = retVal + coefficients[j] * std::pow(z, i);
+        z = z + coefficients[j] * std::pow(input, i);
 
-    return std::abs(retVal);
+    return z;
 }
 
 

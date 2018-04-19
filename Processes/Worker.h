@@ -10,7 +10,7 @@
 
 class Worker : public Process {
 public:
-    Worker(int pid, std::string pname) : Process(pid, pname) { }
+    Worker(int pid, std::string pname) : Process(pid, std::move(pname)) { }
     ~Worker() override = default;
 
     int mainProcedure() override;

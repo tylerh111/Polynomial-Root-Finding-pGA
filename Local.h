@@ -8,7 +8,9 @@
 #include <limits>
 #include <ctime>
 #include <functional>
+#include <complex>
 #include "World/Individual.h"
+#include "World/Polynomial.h"
 
 
 namespace mRandom {
@@ -23,9 +25,9 @@ namespace mRandom {
 }
 
 
-namespace mPolynomial {
-    extern std::function<double(Individual&)> getPolynomial(char* filename);
-
+namespace mFitnessFunctions {
+    extern double applyAbsoluteValue(const Individual& individual);
+    extern std::function<double(const Individual&)> makeAbsoluteValue(const Polynomial& polynomial);
 }
 
 

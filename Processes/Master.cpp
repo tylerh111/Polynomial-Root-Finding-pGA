@@ -7,7 +7,7 @@
 
 int Master::mainProcedure() {
 
-
+    std::cout << "Starting ";
 
 
 

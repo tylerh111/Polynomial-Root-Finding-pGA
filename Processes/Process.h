@@ -10,16 +10,14 @@
 //Abstract Class
 class Process {
 protected:
-    int pid;
+    int pid{-1};
     std::string pname;
-
-
 
 public:
     static int networkSize;
     const static int MASTER_PID = 0;
 
-    Process() : pid(0), pname("") { };
+    Process() : pname("") { };
     Process(int pid, std::string pname);
 
     virtual ~Process() = default;

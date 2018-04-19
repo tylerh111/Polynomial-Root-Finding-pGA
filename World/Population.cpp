@@ -5,19 +5,22 @@
 #include <cmath>
 #include <ctime>
 #include <iomanip>
+#include <utility>
 #include "Population.h"
 
 #include "../Local.h"
 
-
+//const std::function<double(const Individual&)> Population::DEF_FITNESS_FUNCTION = [](const Individual& individual)->double { return 0; };
 
 
 
 // CONSTRUCTORS
-Population::Population(unsigned long pop_size) : Population(pop_size, Polynomial(nullptr)) { }
+Population::Population(unsigned long pop_size) :
+        Population(pop_size,
+                   [](const Individual& individual)->double { return 0; }) { }
 
 Population::Population(unsigned long pop_size,
-                       Polynomial function,
+                       std::function<double(const Individual&)> function,
                        double accepted_error,
                        double mut_rate,
                        double mut_radius,
@@ -35,9 +38,7 @@ Population::Population(unsigned long pop_size,
     this->_mutation_radius = mut_radius;
     this->_generation = start_generation;
 
-    this->_fitness_function = function;
-
-
+    this->_fitness_function = std::move(function);
 }
 
 Population::Population(const Population& that) {
@@ -48,7 +49,6 @@ Population::Population(const Population& that) {
     this->_mutation_radius = that._mutation_radius;
 
     this->_fitness_function = that._fitness_function;
-
 
     this->clear();
     this->_population = std::vector<Individual>(that._population_size);
@@ -250,7 +250,6 @@ bool Population::checkChromosomeConvergence() const {
 
     return true;
 }
-
 bool Population::checkFitnessConvergence() const {
 
     double recur_fitness = _population[0].getFitness();
@@ -527,24 +526,24 @@ std::string Population::printSummary() const {
 
 double Population::fitPopulation() {
     double total = 0;
-    for (Individual& ndiv : _population) {
-        ndiv.setFitness(_fitness_function(ndiv));
-        total += ndiv.getFitness();
+    for (Individual& individual : _population) {
+        individual.setFitness(_fitness_function(individual));
+        total += individual.getFitness();
     }
     return total / _population_size;
 }
 double Population::fitPopulation(Population& population) {
     double total = 0;
-    for (Individual& ndiv : population._population) {
-        ndiv.setFitness(population._fitness_function(ndiv));
-        total += ndiv.getFitness();
+    for (Individual& individual : population._population) {
+        individual.setFitness(population._fitness_function(individual));
+        total += individual.getFitness();
     }
     return total / population._population_size;
 }
 
 double Population::populationFitness() {
     double total = 0;
-    for (Individual ndiv : _population) total += ndiv.getFitness();
+    for (Individual individual : _population) total += individual.getFitness();
     return total / _population_size;
 }
 double Population::populationFitness(const Population& pop) {

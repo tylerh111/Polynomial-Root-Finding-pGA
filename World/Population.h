@@ -34,7 +34,8 @@ private:
     double _accepted_error{};
 
     //fitness function
-    Polynomial _fitness_function;// = Polynomial();
+    std::function<double(const Individual&)> _fitness_function;
+    //static const std::function<double(const Individual&)> DEF_FITNESS_FUNCTION;
 
     //range for crossover
     //double _minor_axis; //ellipse b value
@@ -46,9 +47,9 @@ private:
 
 
 
-protected:
-
     explicit Population(unsigned long pop_size);
+
+protected:
 
     //Genetic operators
     void select(Individual* parents[2]);
@@ -105,7 +106,7 @@ public:
 
     //Constructors
     explicit Population(unsigned long pop_size,
-                        Polynomial    function,
+                        std::function<double(const Individual&)> function,
                         double        accepted_error   = DEF_ACCEPTED_ERROR,
                         double        mut_rate         = DEF_MUTATION_RATE,
                         double        mut_radius       = DEF_MUTATION_RADIUS,
@@ -129,7 +130,8 @@ public:
     inline void setMutationRate(double new_mut_rate)                { _mutation_rate = new_mut_rate;      }
     inline void setMutationRadius(double new_mut_radius)            { _mutation_radius = new_mut_radius;  }
     inline void setAcceptedError(double new_accepted_val)           { _accepted_error = new_accepted_val; }
-    inline void setFitnessFunction(const Polynomial &new_fit_funct) { _fitness_function = new_fit_funct;  }
+    inline void setFitnessFunction(const std::function<double(const Individual&)>& new_fit_funct)
+                                                                    { _fitness_function = new_fit_funct;  }
 
 
 
@@ -157,7 +159,7 @@ public:
 
 
     //Operators
-    Population& operator= (const Population& that) = default;
+    Population& operator=  (const Population& that) = default;
     Individual& operator[] (int ndx);
     friend std::ostream& operator<<(std::ostream &out, const Population &c);
 
