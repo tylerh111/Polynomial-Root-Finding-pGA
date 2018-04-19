@@ -24,10 +24,15 @@
  */
 int main(int argc, char* argv[]) {
 
+    Polynomial p = Polynomial(argv[1]);
+    Individual test = Individual(10,2);
+
+    std::cout << "test = " << test << std::endl;
+    std::cout << "p(x) = " << p.to_string() << std::endl;
+    std::cout << "p(test) = " << p(test) << std::endl;
 
 
-
-    //mpi initialization
+    /*//mpi initialization
     int ierr, pid, size;
     char pname[MPI_MAX_PROCESSOR_NAME];
 
@@ -54,7 +59,7 @@ int main(int argc, char* argv[]) {
         //auto polynomial = mPolynomial::getPolynomial(argc - 2, argv);
         std::cout << "server process" << std::endl;
         Worker worker(pid, pname);
-    }
+    }*/
 
 
 
@@ -107,7 +112,7 @@ int main(int argc, char* argv[]) {
 
 
 
-    ierr = MPI_Finalize();
+    //ierr = MPI_Finalize();
 
     return 0;
 }

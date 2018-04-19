@@ -18,12 +18,23 @@ class Polynomial{
     std::string filename;
     int degree;
     std::complex<double>* coefficients;
+    int coefficients_len;
 
 public:
     Polynomial();
     explicit Polynomial(char* filename);
     ~Polynomial();
 
+    Polynomial(const Polynomial& other);
+    Polynomial(const Polynomial&& other) noexcept;
+    Polynomial& operator=(const Polynomial& other);
+    Polynomial& operator=(Polynomial&& other) noexcept;
+
+    inline int getDegree() { return degree; }
+    inline std::string getFilename() { return filename; }
+    inline const std::complex<double>* getCoefficients() { return coefficients; };
+
+    std::string to_string() const;
     double operator()(const Individual& individual) const;
 
 };
