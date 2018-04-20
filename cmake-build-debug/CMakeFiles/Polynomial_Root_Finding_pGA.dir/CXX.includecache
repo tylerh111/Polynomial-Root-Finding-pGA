@@ -1,4 +1,4 @@
-#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
 
 #IncludeRegexScan: ^.*$
 
@@ -14,6 +14,8 @@ cstdlib
 cmath
 -
 valarray
+-
+cstring
 -
 Local.h
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Local.h

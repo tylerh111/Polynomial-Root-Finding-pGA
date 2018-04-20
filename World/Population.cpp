@@ -16,16 +16,18 @@
 
 // CONSTRUCTORS
 Population::Population(unsigned long pop_size) :
-        Population(pop_size,
-                   [](const Individual& individual)->double { return 0; }) { }
+        Population([](const Individual& individual)->double { return 0; },
+                   pop_size) { }
 
-Population::Population(unsigned long pop_size,
-                       std::function<double(const Individual&)> function,
+Population::Population(std::function<double(const Individual&)> function,
+                       unsigned long pop_size,
                        double accepted_error,
                        double mut_rate,
                        double mut_radius,
                        unsigned long start_generation) {
     if (pop_size < 3) throw PopulationSizeException();
+
+    this->_fitness_function = std::move(function);
 
     this->_population = std::vector<Individual>(pop_size);
     this->_population_size = pop_size;
@@ -38,17 +40,17 @@ Population::Population(unsigned long pop_size,
     this->_mutation_radius = mut_radius;
     this->_generation = start_generation;
 
-    this->_fitness_function = std::move(function);
 }
 
 Population::Population(const Population& that) {
+    this->_fitness_function = that._fitness_function;
+
     this->_population_size = that._population_size;
     this->_accepted_error = that._accepted_error;
     this->_generation = that._generation;
     this->_mutation_rate = that._mutation_rate;
     this->_mutation_radius = that._mutation_radius;
 
-    this->_fitness_function = that._fitness_function;
 
     this->clear();
     this->_population = std::vector<Individual>(that._population_size);
@@ -345,7 +347,7 @@ Population::STATUS Population::evolve(){
     unsigned long new_pop_size = _population_size / 3;
     if (new_pop_size % 2 != 0) new_pop_size++;
 
-    Population new_generation(new_pop_size, _fitness_function);
+    Population new_generation(_fitness_function, new_pop_size);
 
     for (unsigned long i = 0; i < (_population_size / 3); i+=2) {
 

@@ -44,9 +44,6 @@ private:
     //hide default population constructor
     Population() = default;
 
-
-
-
     explicit Population(unsigned long pop_size);
 
 protected:
@@ -97,6 +94,7 @@ public:
     static const int SUM_SIZE         = 7;
 
     //default values for hyper parameters
+    static const unsigned long DEF_POPULATION_SIZE  = 3;
     static constexpr double    DEF_ACCEPTED_ERROR   = 0;
     static constexpr double    DEF_MUTATION_RATE    = 0;
     static constexpr double    DEF_MUTATION_RADIUS  = 0;
@@ -105,8 +103,8 @@ public:
 
 
     //Constructors
-    explicit Population(unsigned long pop_size,
-                        std::function<double(const Individual&)> function,
+    explicit Population(std::function<double(const Individual&)> function,
+                        unsigned long pop_size         = DEF_POPULATION_SIZE,
                         double        accepted_error   = DEF_ACCEPTED_ERROR,
                         double        mut_rate         = DEF_MUTATION_RATE,
                         double        mut_radius       = DEF_MUTATION_RADIUS,

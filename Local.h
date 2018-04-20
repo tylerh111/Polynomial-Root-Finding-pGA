@@ -31,7 +31,15 @@ namespace mFitnessFunctions {
 }
 
 
-
+namespace mInformationRetrieval{
+    extern void getInformation(int argc,
+                               char** argv,
+                               unsigned long &pop_s,
+                               double &acpt_e,
+                               double &mut_rate,
+                               double &mut_rad,
+                               double &start_rad);
+}
 
 
 
