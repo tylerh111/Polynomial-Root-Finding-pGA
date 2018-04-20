@@ -103,6 +103,8 @@ int main(int argc, char* argv[]) {
         std::cout << "master process" << std::endl;
         std::cout << "pname = " << pname << std::endl;
         Master master(pid, pname);
+
+
     }
     else{
 

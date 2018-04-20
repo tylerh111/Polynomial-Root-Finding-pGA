@@ -9,6 +9,8 @@ CMakeFiles/Polynomial_Root_Finding_pGA.dir/Local.cpp.o: ../World/Polynomial.h
 CMakeFiles/Polynomial_Root_Finding_pGA.dir/Processes/Master.cpp.o: ../Processes/Master.cpp
 CMakeFiles/Polynomial_Root_Finding_pGA.dir/Processes/Master.cpp.o: ../Processes/Master.h
 CMakeFiles/Polynomial_Root_Finding_pGA.dir/Processes/Master.cpp.o: ../Processes/Process.h
+CMakeFiles/Polynomial_Root_Finding_pGA.dir/Processes/Master.cpp.o: ../World/Individual.h
+CMakeFiles/Polynomial_Root_Finding_pGA.dir/Processes/Master.cpp.o: ../World/Polynomial.h
 
 CMakeFiles/Polynomial_Root_Finding_pGA.dir/Processes/Process.cpp.o: ../Processes/Process.cpp
 CMakeFiles/Polynomial_Root_Finding_pGA.dir/Processes/Process.cpp.o: ../Processes/Process.h

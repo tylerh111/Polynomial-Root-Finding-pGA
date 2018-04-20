@@ -13,6 +13,7 @@ class Master : public Process {
     Polynomial p;
 
 
+
 public:
     Master(int pid, std::string pname) : Process(pid, std::move(pname)) { }
     ~Master() override = default;

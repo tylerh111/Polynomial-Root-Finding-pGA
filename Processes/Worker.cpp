@@ -20,6 +20,8 @@ int Worker::mainProcedure() {
 
         //send array to master node
 
+        //log progress
+
         //integration / migrate
     }
 

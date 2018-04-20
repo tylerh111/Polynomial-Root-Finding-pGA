@@ -47,6 +47,8 @@ Master.h
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Processes/Master.h
 Process.h
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Processes/Process.h
+../World/Polynomial.h
+/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/World/Polynomial.h
 
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Processes/Process.cpp
 Process.h
