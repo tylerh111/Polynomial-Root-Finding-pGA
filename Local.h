@@ -13,6 +13,15 @@
 #include "World/Polynomial.h"
 
 
+
+
+/*extern int buf [MAX_SIZE];
+
+auto init_buf = [](int b[MAX_SIZE]){
+    for(int i = 0; i < MAX_SIZE; i++)
+        b[i] = 0;
+};*/
+
 namespace mRandom {
 
     extern std::mt19937_64 generator;

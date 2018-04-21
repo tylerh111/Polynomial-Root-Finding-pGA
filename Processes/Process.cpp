@@ -6,11 +6,6 @@
 
 #include <utility>
 
-Process::Process(int pid, std::string pname) {
-    this->pid = pid;
-    this->pname = std::move(pname);
-}
-
 
 int Process::networkSize = -1;
 

@@ -8,7 +8,6 @@
 #include <utility>
 #include "Population.h"
 
-#include "../Local.h"
 
 //const std::function<double(const Individual&)> Population::DEF_FITNESS_FUNCTION = [](const Individual& individual)->double { return 0; };
 
@@ -32,8 +31,13 @@ Population::Population(std::function<double(const Individual&)> function,
     this->_population = std::vector<Individual>(pop_size);
     this->_population_size = pop_size;
 
-    this->_combined_population = _population;
-    this->_combined_population_size = _population_size;
+    //this->_combined_population = _population;
+    //this->_combined_population_size = _population_size;
+
+    //this->_combined_population = std::vector<Individual&>(pop_size);
+    for(int i = 0; i < _population_size; i++) {
+        _combined_population.push_back(&_population[i]);
+    }
 
     this->_accepted_error = accepted_error;
     this->_mutation_rate = mut_rate;
@@ -54,14 +58,14 @@ Population::Population(const Population& that) {
 
     this->clear();
     this->_population = std::vector<Individual>(that._population_size);
-    this->_combined_population = std::vector<Individual>(that._combined_population_size);
+    //this->_combined_population = std::vector<Individual>(that._combined_population_size);
 
     for (int i = 0; i < this->_population_size; i++) {
         _population[i] = Individual(that._population[i]);
     }
 
     for (int i = 0; i < that._combined_population_size; i++){
-        _combined_population[i] = Individual(that._combined_population[i]);
+        _combined_population[i] = that._combined_population[i];
     }
 }
 
@@ -75,7 +79,7 @@ void Population::init(double start_radius){
         _population[i] = Individual(mRandom::getRandUniformDist(0.0, 2*offset) - offset,
                                     mRandom::getRandUniformDist(0.0, 2*offset) - offset);
         _population[i].setFitness(_fitness_function(_population[i]));
-        _combined_population[i] = _population[i];
+        _combined_population[i] = &_population[i];
     }
 }
 
@@ -122,7 +126,7 @@ void Population::select(Individual* parents[2]) {
             while (i < pop_cap && num > accumulated[i++]) { /*do nothing*/ }
 
             //if the index we picked was from
-            ndx = &_combined_population[--i];
+            ndx = _combined_population[--i];
 
         } while (ndx == not_me);
 
@@ -307,6 +311,16 @@ void Population::remove(Individual &x) {
 
 
 
+Individual& Population::get(unsigned long i) {
+    return _population[i];
+}
+
+
+
+
+
+
+
 /*bool shouldPrint(int gen){
     return (gen < 10) ||
            ((gen < 100) && (gen % 10 == 0)) ||
@@ -331,7 +345,7 @@ Population::STATUS Population::evolve(){
     sort();
 
     //print summary
-    printSummary();
+    //printSummary();
 
     //check for a root
     if (checkSolution()) return FOUND;
@@ -350,16 +364,18 @@ Population::STATUS Population::evolve(){
     Population new_generation(_fitness_function, new_pop_size);
 
     for (unsigned long i = 0; i < (_population_size / 3); i+=2) {
+        std::cout << "what is happening0" << std::endl;
 
         Individual* parents[2];
         select(parents);
+        std::cout << "what is happening1" << std::endl;
 
         Individual offspring[2];
         crossover(offspring, parents);
-
+        std::cout << "what is happening2" << std::endl;
         mutate(offspring[0]);
         mutate(offspring[1]);
-
+        std::cout << "what is happening3" << std::endl;
         new_generation._population.push_back(offspring[0]);
         new_generation._population.push_back(offspring[1]);
 
@@ -373,7 +389,14 @@ Population::STATUS Population::evolve(){
 
     _generation++;
 
-    _combined_population = _population;
+    //_combined_population = _population;
+    for (int i = 0; i < _population_size; i++){
+        _combined_population[i] = &_population[i];
+    }
+
+
+
+
 
     return status;
 }
@@ -524,6 +547,12 @@ std::string Population::printSummary() const {
 
 
 
+const Individual& Population::getBestFit(){
+    return _population[0];
+}
+
+
+
 
 
 double Population::fitPopulation() {
@@ -553,9 +582,9 @@ double Population::populationFitness(const Population& pop) {
     for (Individual individual : pop._population) total += individual.getFitness();
     return total / pop._population_size;
 }
-double Population::populationFitness(const std::vector<Individual>& vector) {
+double Population::populationFitness(const std::vector<Individual*>& vector) {
     double total = 0;
-    for (Individual individual : vector) total += individual.getFitness();
+    for (Individual* individual : vector) total += individual->getFitness();
     return total / vector.size();
 }
 
@@ -597,8 +626,11 @@ std::ostream& operator<<(std::ostream &out, const Population &c) {
 
 
 void Population::reset() {
-    _combined_population = _population;
-    _combined_population_size = _population_size;
+    //_combined_population = _population;
+    //_combined_population_size = _population_size;
+    for(int i = 0; i < _population_size; i++){
+        _combined_population[i] = &_population[i];
+    }
 }
 
 
@@ -606,11 +638,11 @@ void Population::reset() {
 
 
 
-void Population::integration(const std::vector<Individual>& vector) {
+/*void Population::integration(const std::vector<Individual>& vector) {
     _combined_population_size += vector.size();
     _combined_population.reserve(_combined_population_size);
     _combined_population.insert(std::end(_combined_population), std::begin(vector), std::end(vector));
-}
+}*/
 
 
 

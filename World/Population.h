@@ -11,6 +11,8 @@
 #include "Individual.h"
 #include "Polynomial.h"
 
+#include "../Local.h"
+
 
 class Population {
 private:
@@ -20,7 +22,7 @@ private:
     unsigned long _population_size{};
 
     //combined population (for migration)
-    std::vector<Individual> _combined_population;
+    std::vector<Individual*> _combined_population;
     unsigned long _combined_population_size{};
 
     //number of generation that this population evolve
@@ -54,17 +56,16 @@ protected:
     void mutate(Individual& x);
     void replace(Population& replacement);
 
-    bool checkSolution() const;
-    bool checkChromosomeConvergence() const;
-    bool checkFitnessConvergence() const;
     int handleConvergence();
+
 
     //modify population
     void add(Individual& x);
     void addAll(const std::vector<Individual>& vector);
+
     void remove(Individual& x);
 
-
+    Individual& get(unsigned long i);
 
 public:
 
@@ -94,11 +95,11 @@ public:
     static const int SUM_SIZE         = 7;
 
     //default values for hyper parameters
-    static const unsigned long DEF_POPULATION_SIZE  = 3;
-    static constexpr double    DEF_ACCEPTED_ERROR   = 0;
-    static constexpr double    DEF_MUTATION_RATE    = 0;
-    static constexpr double    DEF_MUTATION_RADIUS  = 0;
-    static constexpr double    DEF_START_RADIUS     = 0;
+    static const unsigned long DEF_POPULATION_SIZE  = 100;
+    static constexpr double    DEF_ACCEPTED_ERROR   = 0.005;
+    static constexpr double    DEF_MUTATION_RATE    = 0.33;
+    static constexpr double    DEF_MUTATION_RADIUS  = 100;
+    static constexpr double    DEF_START_RADIUS     = 1000000;
     static const unsigned long DEF_START_GENERATION = 0;
 
 
@@ -111,6 +112,9 @@ public:
                         unsigned long start_generation = DEF_START_GENERATION);
 
     Population(const Population& that);
+    Population(const Population&& that);
+    Population& operator=(const Population& that);
+    Population& operator=(const Population&& that);
     ~Population() = default;
 
     void init(double start_radius = DEF_START_RADIUS);
@@ -137,18 +141,22 @@ public:
     void integration(const std::vector<Individual>& vector);
 
 
-
-
     STATUS evolve();
     //void evolveLoop(int generations = std::numeric_limits<int>::max(), int starting_gen = 0);
 
+
+
+    //population status functions
+    bool checkSolution() const;
+    bool checkChromosomeConvergence() const;
+    bool checkFitnessConvergence() const;
 
     //set and fit population
     double fitPopulation();
     static double fitPopulation(Population& population);
     double populationFitness();
     static double populationFitness(const Population&);
-    double populationFitness(const std::vector<Individual>& vector);
+    double populationFitness(const std::vector<Individual*>& vector);
 
 
     //summary of population's history
@@ -156,8 +164,10 @@ public:
     void getSummary(double summary[SUM_SIZE]) const;
 
 
+    const Individual& getBestFit();
+
+
     //Operators
-    Population& operator=  (const Population& that) = default;
     Individual& operator[] (int ndx);
     friend std::ostream& operator<<(std::ostream &out, const Population &c);
 

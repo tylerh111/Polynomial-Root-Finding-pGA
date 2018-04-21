@@ -6,6 +6,9 @@
 #define POLYNOMIAL_ROOT_FINDING_PGA_PROCESS_H
 
 #include <mpi.h>
+#include "../Local.h"
+
+#define MAX_SIZE 1024
 
 //Abstract Class
 class Process {
@@ -13,12 +16,21 @@ protected:
     int pid{-1};
     std::string pname;
 
+    int buffer[MAX_SIZE];
+
 public:
     static int networkSize;
-    const static int MASTER_PID = 0;
 
-    Process() : pname("") { };
-    Process(int pid, std::string pname);
+    //TODO: put status message tags
+
+    const static int MASTER_PID = 0;
+    const static int TAG_CONTINUE = 3;
+    const static int TAG_STATUS_UPDATE = 4;
+    const static int TAG_SUMMARY = 1;
+    const static int TAG_FINAL = 2;
+
+    //Process() : Process(-1, "") { }
+    //Process(int pid, std::string pname);
 
     virtual ~Process() = default;
 
@@ -31,7 +43,7 @@ public:
     virtual int mainProcedure() = 0;
 
 
-    class NetworkSizeException : public std::runtime_error{
+    class NetworkSizeException final : public std::runtime_error{
     public:
         explicit NetworkSizeException(const std::string &msg = "Network size is too small")
                 : runtime_error(msg) {}

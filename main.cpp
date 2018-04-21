@@ -14,6 +14,9 @@
 
 
 
+
+
+
 /**
  * argv is formatted as:
  * <executable>    <polynomial-file.txt>
@@ -34,8 +37,8 @@
 int main(int argc, char* argv[]) {
 
     //print argv
-    int i = -1;
-    while(argv[++i] != nullptr) std::cout << "argv[" << i << "] = " << argv[i] << std::endl;
+    //int i = -1;
+    //while(argv[++i] != nullptr) std::cout << "argv[" << i << "] = " << argv[i] << std::endl;
 
 
     //testing polynomial
@@ -59,7 +62,7 @@ int main(int argc, char* argv[]) {
     Process::setNetworkSize(size);
 
     //size must be 2 or more
-    //if (size < 2) throw Process::NetworkSizeException();
+    if (size < 2) throw Process::NetworkSizeException();
 
 
     //retrieving information
@@ -98,19 +101,28 @@ int main(int argc, char* argv[]) {
     int pname_len;
     MPI_Get_processor_name(pname, &pname_len);
 
+    //init_buf(buf);
+
     //if we are the master node
     if (pid == Process::MASTER_PID){
         std::cout << "master process" << std::endl;
         std::cout << "pname = " << pname << std::endl;
-        Master master(pid, pname);
-
+        Master master(pid, pname, polynomial);
+        master.mainProcedure();
 
     }
     else{
 
-        std::cout << "server process" << std::endl;
-        std::cout << "pname = " << pname << std::endl;
-        Worker worker(pid, pname);
+        //std::cout << "server process" << std::endl;
+        //std::cout << "pname = " << pname << std::endl;
+
+        auto fitnessFunction = mFitnessFunctions::makeAbsoluteValue(polynomial);
+
+        Population population = Population(fitnessFunction, populationSize, acceptedError, mutationRate, mutationRadius);
+
+        //TODO: add a seed for the population
+        Worker worker(pid, pname, polynomial, population);
+        worker.mainProcedure();
     }
 
 

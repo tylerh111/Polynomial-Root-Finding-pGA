@@ -15,6 +15,7 @@
 //TODO: someday make this class abstract (operator is virtual) so fitness function is customizable.
 //TODO:   This is a framework creation issue
 class Polynomial{
+private:
     std::string filename;
     int degree;
     std::complex<double>* coefficients;

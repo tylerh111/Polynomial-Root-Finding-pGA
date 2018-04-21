@@ -7,10 +7,16 @@
 
 
 #include "Process.h"
+#include "../World/Polynomial.h"
+#include "../World/Population.h"
 
 class Worker : public Process {
+private:
+    Polynomial& polynomial;
+    Population& population;
+
 public:
-    Worker(int pid, std::string pname) : Process(pid, std::move(pname)) { }
+    Worker(int pid, std::string pname, Polynomial& polynomial, Population& population);
     ~Worker() override = default;
 
     int mainProcedure() override;
