@@ -39,20 +39,22 @@ private:
     std::function<double(const Individual&)> _fitness_function;
     //static const std::function<double(const Individual&)> DEF_FITNESS_FUNCTION;
 
+    Polynomial _polynomial{};
+    //static const Polynomial DEF_POLYNOMIAL;
+
     //range for crossover
     //double _minor_axis; //ellipse b value
     //double _major_axis; //ellipse a value
 
-    //hide default population constructor
-    Population() = default;
-
-    explicit Population(unsigned long pop_size);
+    explicit Population(std::function<double(const Individual&)> function, unsigned long pop_size);
 
 protected:
 
     //Genetic operators
     void select(Individual* parents[2]);
+    Individual* select();
     void crossover(Individual offspring[2], Individual* parents[2]);
+    std::complex<double> gradient(Individual *parent, unsigned long parts = DEF_GRADIENT_PARTS);
     void mutate(Individual& x);
     void replace(Population& replacement);
 
@@ -78,7 +80,8 @@ public:
 
 
     //status codes on evolve()
-    enum STATUS {
+    enum status {
+        IGNORE    = -1,
         NOT_FOUND = 0,
         FOUND     = 1,
         CONVERGED = 2};
@@ -95,16 +98,19 @@ public:
     static const int SUM_SIZE         = 7;
 
     //default values for hyper parameters
-    static const unsigned long DEF_POPULATION_SIZE  = 100;
+    static const unsigned long DEF_POPULATION_SIZE  = 2500;
     static constexpr double    DEF_ACCEPTED_ERROR   = 0.005;
     static constexpr double    DEF_MUTATION_RATE    = 0.33;
     static constexpr double    DEF_MUTATION_RADIUS  = 100;
     static constexpr double    DEF_START_RADIUS     = 1000000;
     static const unsigned long DEF_START_GENERATION = 0;
+    static const unsigned long DEF_GRADIENT_PARTS   = 10;
 
 
     //Constructors
+    Population() = default;
     explicit Population(std::function<double(const Individual&)> function,
+                        Polynomial    polynomial,
                         unsigned long pop_size         = DEF_POPULATION_SIZE,
                         double        accepted_error   = DEF_ACCEPTED_ERROR,
                         double        mut_rate         = DEF_MUTATION_RATE,
@@ -141,9 +147,8 @@ public:
     void integration(const std::vector<Individual>& vector);
 
 
-    STATUS evolve();
+    status evolve();
     //void evolveLoop(int generations = std::numeric_limits<int>::max(), int starting_gen = 0);
-
 
 
     //population status functions

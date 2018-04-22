@@ -5,7 +5,6 @@
 #include <cstring>
 #include "Polynomial.h"
 
-Polynomial::Polynomial() : Polynomial(nullptr) { }
 
 
 /**
@@ -111,5 +110,6 @@ std::complex<double> Polynomial::operator()(const std::complex<double>& input) c
 
     return z;
 }
+
 
 

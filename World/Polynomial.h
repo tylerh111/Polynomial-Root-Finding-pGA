@@ -22,7 +22,7 @@ private:
     int coefficients_len;
 
 public:
-    Polynomial();
+    Polynomial() = default;
     explicit Polynomial(char* filename);
     ~Polynomial();
 
@@ -34,6 +34,7 @@ public:
     inline int getDegree() { return degree; }
     inline std::string getFilename() { return filename; }
     inline const std::complex<double>* getCoefficients() { return coefficients; };
+
 
     std::string to_string() const; //override operation<<
     std::complex<double> operator()(const std::complex<double>& input) const;

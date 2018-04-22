@@ -10,7 +10,29 @@
 #include "Local.h"
 
 
-std::mt19937_64 mRandom::generator;
+std::random_device rng::device;
+//std::mt19937_64 rng::generator(rng::device());
+std::mt19937_64 rng::generator(0);
+bool rng::isSeeded = false;
+
+void rng::seedGenerator(unsigned long seed) {
+    generator.seed(seed);
+    isSeeded = true;
+}
+
+double rng::getRealUniformDist(double lower, double upper) {
+    std::uniform_real_distribution<double> distribution(lower, upper);
+    return distribution(generator);
+}
+
+double rng::getRealNormalDist(double lower, double upper) {
+    std::normal_distribution<double> distribution(lower, upper);
+    return distribution(generator);
+}
+
+
+
+/*std::mt19937_64 mRandom::generator;
 bool mRandom::isSeeded = false;
 
 void mRandom::seedGenerator(unsigned long seed) {
@@ -18,15 +40,15 @@ void mRandom::seedGenerator(unsigned long seed) {
     isSeeded = true;
 }
 
-double mRandom::getRandUniformDist(double lower, double upper) {
+double mRandom::getRealUniformDist(double lower, double upper) {
     std::uniform_real_distribution<double> distribution(lower, upper);
     return distribution(generator);
 }
 
-double mRandom::getRandNormalDist(double lower, double upper) {
+double mRandom::getRealNormalDist(double lower, double upper) {
     std::normal_distribution<double> distribution(lower, upper);
     return distribution(generator);
-}
+}*/
 
 
 

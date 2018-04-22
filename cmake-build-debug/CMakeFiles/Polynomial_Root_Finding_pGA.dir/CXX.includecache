@@ -1,4 +1,4 @@
-#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
 
 #IncludeRegexScan: ^.*$
 
@@ -41,14 +41,26 @@ World/Polynomial.h
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/World/Polynomial.h
 
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Processes/Master.cpp
+iomanip
+-
 Master.h
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Processes/Master.h
 
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Processes/Master.h
+thread
+-
+pthread.h
+-
+mutex
+-
+condition_variable
+-
 Process.h
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Processes/Process.h
 ../World/Polynomial.h
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/World/Polynomial.h
+../World/Population.h
+/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/World/Population.h
 
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Processes/Process.cpp
 Process.h
@@ -59,14 +71,22 @@ utility
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Processes/Process.h
 mpi.h
 -
+../Local.h
+/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Local.h
 
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Processes/Worker.cpp
 Worker.h
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Processes/Worker.h
+../Local.h
+/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Local.h
 
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Processes/Worker.h
 Process.h
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Processes/Process.h
+../World/Polynomial.h
+/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/World/Polynomial.h
+../World/Population.h
+/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/World/Population.h
 
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/World.h
 World/Individual.h
@@ -121,10 +141,10 @@ iomanip
 -
 utility
 -
+thread
+-
 Population.h
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/World/Population.h
-../Local.h
-/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Local.h
 
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/World/Population.h
 utility
@@ -141,6 +161,8 @@ Individual.h
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/World/Individual.h
 Polynomial.h
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/World/Polynomial.h
+../Local.h
+/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/Local.h
 
 /home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/main.cpp
 iostream

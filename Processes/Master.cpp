@@ -7,7 +7,7 @@
 
 
 Master::Master(int pid, std::string pname, Polynomial& polynomial)
-        : polynomial(polynomial), finished(false), generation(0), shouldPrintHeader(true) {
+        : polynomial(polynomial), finished(false), generation(-1), shouldPrintHeader(true) {
     this->pid = pid;
     this->pname = std::move(pname);
     for(int& i : this->buffer) i = 0;
@@ -59,27 +59,42 @@ void Master::processHandler(const int tid) {
     printHeader();
     lock_header.~lock_guard();
 
-    int x;
+    std::complex<double> final;
 
+    int x = NOTHING;
+
+    long l_gen = -1;
 
     while(!finished){
-        //std::cout << "loop #" << generation << std::endl;
-        //should print header (must be true to print)
+
+        //increment the generation and print header counter if local counter is the same
+        std::lock_guard<std::mutex> lock_generation(mutex_generation);
+        if (generation == l_gen) {
+            generation++;
+            printHeader();
+        }
+        lock_generation.~lock_guard();
 
 
         //allow worker to continue
         MPI_Send(&x, 1, MPI_INTEGER, tid, TAG_CONTINUE, MPI_COMM_WORLD);
 
+        std::cout << "waiting to recv information\n";
+
         //receive status from worker
         MPI_Recv(&x, 1, MPI_INTEGER, tid, TAG_STATUS_UPDATE, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
-        std::cout << "x = " << x << std::endl;
 
         //TODO: use buffer to check status of worker more extensively
         std::lock_guard<std::mutex> lock_finish(mutex_finished);
-        if(buffer[tid] == Population::FOUND) finished = true;
+        if(x == COMPLETE || x == COMPLETE_MORE) finished = true;
         lock_finish.~lock_guard();
 
+        if(x == COMPLETE_MORE){
+            MPI_Recv(&final, 1,MPI_DOUBLE_COMPLEX, tid, TAG_FINAL, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        }
+
+        std::cout << "waiting to recv summary report\n";
 
         //get summary of progress
         MPI_Recv(summary, Population::SUM_SIZE, MPI_DOUBLE, tid, TAG_SUMMARY, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
@@ -87,12 +102,7 @@ void Master::processHandler(const int tid) {
         //print summary
         printReport(tid, summary);
 
-        generation++;
-
-
-        //TODO: write logic to print once
-        printHeader();
-
+        l_gen++;
     }
 
     cv_finished.notify_all();
@@ -105,13 +115,12 @@ void Master::processHandler(const int tid) {
 
 int Master::mainProcedure() {
 
-    std::cout << "Starting ";
-
-//    auto summaries = new double *[networkSize];
-//    for (int i = 0; i < networkSize; i++)
-//        summaries[i] = new double[Population::SUM_SIZE];
+    std::cout << "Starting";
 
     std::thread threads[networkSize];
+
+    //TODO: start time
+
 
     //start threads
     for(int i = 1; i < networkSize; i++) {
@@ -130,6 +139,9 @@ int Master::mainProcedure() {
         std::cout << "joining with thread " << i << std::endl;
         if (threads[i].joinable()) threads[i].join();
     }
+
+    //TODO: end time
+    //print time elapsed
 
 
 

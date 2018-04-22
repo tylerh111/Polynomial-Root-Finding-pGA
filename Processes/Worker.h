@@ -12,10 +12,11 @@
 
 class Worker : public Process {
 private:
-    Polynomial& polynomial;
-    Population& population;
+    Polynomial polynomial;
+    Population population;
 
 public:
+    Worker() = default;
     Worker(int pid, std::string pname, Polynomial& polynomial, Population& population);
     ~Worker() override = default;
 

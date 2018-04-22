@@ -36,6 +36,7 @@
  */
 int main(int argc, char* argv[]) {
 
+
     //print argv
     //int i = -1;
     //while(argv[++i] != nullptr) std::cout << "argv[" << i << "] = " << argv[i] << std::endl;
@@ -87,21 +88,20 @@ int main(int argc, char* argv[]) {
 
 
 
-    /*auto p = [=]()->void{
+    auto p = [=]()->void{
         std::cout << "populationSize = " << populationSize
                   << "\nacceptedError = " << acceptedError
                   << "\nmutationRate = " << mutationRate
                   << "\nmutationRadius = " << mutationRadius
                   << "\nstartingRadius = " << startingRadius << std::endl;
     };
-    p();*/
+    //p();
 
 
     //setting up processes
     int pname_len;
     MPI_Get_processor_name(pname, &pname_len);
 
-    //init_buf(buf);
 
     //if we are the master node
     if (pid == Process::MASTER_PID){
@@ -115,10 +115,11 @@ int main(int argc, char* argv[]) {
 
         //std::cout << "server process" << std::endl;
         //std::cout << "pname = " << pname << std::endl;
+        rng::seedGenerator(1);
 
         auto fitnessFunction = mFitnessFunctions::makeAbsoluteValue(polynomial);
 
-        Population population = Population(fitnessFunction, populationSize, acceptedError, mutationRate, mutationRadius);
+        Population population = Population(fitnessFunction, polynomial, populationSize, acceptedError, mutationRate, mutationRadius);
 
         //TODO: add a seed for the population
         Worker worker(pid, pname, polynomial, population);

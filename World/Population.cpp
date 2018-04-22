@@ -6,19 +6,23 @@
 #include <ctime>
 #include <iomanip>
 #include <utility>
+#include <thread>
 #include "Population.h"
 
 
 //const std::function<double(const Individual&)> Population::DEF_FITNESS_FUNCTION = [](const Individual& individual)->double { return 0; };
 
-
+//Polynomial Population::DEF_POLYNOMIAL = Polynomial();
 
 // CONSTRUCTORS
-Population::Population(unsigned long pop_size) :
-        Population([](const Individual& individual)->double { return 0; },
-                   pop_size) { }
+Population::Population(std::function<double(const Individual&)> function, unsigned long pop_size) {
+    this->_population_size = pop_size;
+    this->_population = std::vector<Individual>(pop_size);
+    this->_fitness_function = std::move(function);
+}
 
 Population::Population(std::function<double(const Individual&)> function,
+                       Polynomial polynomial,
                        unsigned long pop_size,
                        double accepted_error,
                        double mut_rate,
@@ -27,17 +31,13 @@ Population::Population(std::function<double(const Individual&)> function,
     if (pop_size < 3) throw PopulationSizeException();
 
     this->_fitness_function = std::move(function);
+    this->_polynomial = std::move(polynomial);
 
     this->_population = std::vector<Individual>(pop_size);
     this->_population_size = pop_size;
 
-    //this->_combined_population = _population;
-    //this->_combined_population_size = _population_size;
-
-    //this->_combined_population = std::vector<Individual&>(pop_size);
-    for(int i = 0; i < _population_size; i++) {
-        _combined_population.push_back(&_population[i]);
-    }
+    this->_combined_population = std::vector<Individual*>(pop_size);
+    this->_combined_population_size = _population_size;
 
     this->_accepted_error = accepted_error;
     this->_mutation_rate = mut_rate;
@@ -67,6 +67,7 @@ Population::Population(const Population& that) {
     for (int i = 0; i < that._combined_population_size; i++){
         _combined_population[i] = that._combined_population[i];
     }
+
 }
 
 
@@ -76,50 +77,53 @@ void Population::init(double start_radius){
     double offset = std::abs(start_radius);
 
     for (int i = 0; i < _population_size; i++) {
-        _population[i] = Individual(mRandom::getRandUniformDist(0.0, 2*offset) - offset,
-                                    mRandom::getRandUniformDist(0.0, 2*offset) - offset);
+        _population[i] = Individual(rng::getRealUniformDist(0.0, 2 * offset) - offset,
+                                    rng::getRealUniformDist(0.0, 2 * offset) - offset);
         _population[i].setFitness(_fitness_function(_population[i]));
         _combined_population[i] = &_population[i];
     }
+
+    sort();
 }
 
 
 
 
-/**
- *
- * @param parents
- */
 void Population::select(Individual* parents[2]) {
-    Individual* ret[2];	          //ret    := used to hold ret values until end to assign parents
-    Individual* not_me = nullptr; //not_me := used to avoid selecting same member twice
+    Individual *ret[2] = {nullptr, nullptr}; //ret    := used to hold ret values until end to assign parents
+    Individual *not_me = nullptr;              //not_me := used to avoid selecting same member twice
 
-    unsigned long pop_cap = _population_size;
+    unsigned long pop_cap = _combined_population_size;
 
     //total of all members' fitness
-    double totalFitness = populationFitness(_combined_population);
+    double totalFitness = [this]() {
+        double total = 0;
+        for(const auto& p : _combined_population) total += p->getFitness();
+        return total;
+    }();
 
     //probability and accumulated are used to pick from the population using a uniform distribution
     //ex: probability: { 0.5, 0.3, 0.2 }
     //	  accumulated: { 0.5, 0.8, 1.0 } <-- pick based on this array
-    auto probability = new double[pop_cap];	//probability[i] = fitness(i) / total_i
-    auto accumulated = new double[pop_cap];	//accumulated[i] = accumulated[i - 1] + probability[i]
+    auto probability = new double[pop_cap];    //probability[i] = fitness(i) / total_i
+    auto accumulated = new double[pop_cap];    //accumulated[i] = accumulated[i - 1] + probability[i]
 
     //calculating probability
-    for (int i = 0; i < pop_cap; i++) probability[i] = _population[i].getFitness() / totalFitness;
+    for (int i = 0; i < pop_cap; i++) probability[i] = _combined_population[i]->getFitness() / totalFitness;
 
     //calculating accumulated
     accumulated[0] = probability[0];
     accumulated[pop_cap - 1] = 1;
     for (int i = 1; i < pop_cap - 1; i++) accumulated[i] = accumulated[i - 1] + probability[i];
 
-
     //for each parent (2)
     for (auto &ndx : ret) {
+
         //do while the parents are equal to each other
         do {
+
             //get random number [0, 1] from uniform distribution to pick from population
-            double num = mRandom::getRandUniformDist(0.0, 1.0);
+            double num = rng::getRealUniformDist(0.0, 1.0);
 
             //pick from population by setting i where num <= accumulated[i]
             unsigned long i = 0;
@@ -130,6 +134,7 @@ void Population::select(Individual* parents[2]) {
 
         } while (ndx == not_me);
 
+
         //to make sure parents are not equal
         not_me = ret[0];
     }
@@ -138,10 +143,62 @@ void Population::select(Individual* parents[2]) {
     parents[0] = ret[0];
     parents[1] = ret[1];
 
+
     //deleting
     delete[] probability;
     delete[] accumulated;
+
 }
+
+
+
+
+
+Individual* Population::select() {
+    Individual *ret= nullptr; //ret := the returned parent
+
+    unsigned long pop_cap = _combined_population_size;
+
+    //total of all members' fitness
+    double totalFitness = [this]() {
+        double total = 0;
+        for(const auto& p : _combined_population) total += p->getFitness();
+        return total;
+    }();
+
+    //probability and accumulated are used to pick from the population using a uniform distribution
+    //ex: probability: { 0.5, 0.3, 0.2 }
+    //	  accumulated: { 0.5, 0.8, 1.0 } <-- pick based on this array
+    auto probability = new double[pop_cap];    //probability[i] = fitness(i) / total_i
+    auto accumulated = new double[pop_cap];    //accumulated[i] = accumulated[i - 1] + probability[i]
+
+    //calculating probability
+    for (int i = 0; i < pop_cap; i++) probability[i] = _combined_population[i]->getFitness() / totalFitness;
+
+    //calculating accumulated
+    accumulated[0] = probability[0];
+    accumulated[pop_cap - 1] = 1;
+    for (int i = 1; i < pop_cap - 1; i++) accumulated[i] = accumulated[i - 1] + probability[i];
+
+
+
+    //get random number [0, 1] from uniform distribution to pick from population
+    double num = rng::getRealUniformDist(0.0, 1.0);
+
+    //pick from population by setting i where num <= accumulated[i]
+    unsigned long i = 0;
+    while (i < pop_cap && num > accumulated[i++]) { /*do nothing*/ }
+
+    //if the index we picked was from
+    ret = _combined_population[--i];
+
+    //deleting
+    delete[] probability;
+    delete[] accumulated;
+
+    return ret;
+}
+
 
 
 
@@ -165,11 +222,10 @@ void Population::crossover(Individual offspring[2], Individual* parents[2]) {
 
 
     //geofencing
-    ret[0] = Individual(mRandom::getRandUniformDist(real_lower, real_upper),
-                        mRandom::getRandUniformDist(imag_lower, imag_upper));
-    ret[1] = Individual(mRandom::getRandUniformDist(real_lower, real_upper),
-                        mRandom::getRandUniformDist(imag_lower, imag_upper));
-
+    ret[0] = Individual(rng::getRealUniformDist(real_lower, real_upper),
+                        rng::getRealUniformDist(imag_lower, imag_upper));
+    ret[1] = Individual(rng::getRealUniformDist(real_lower, real_upper),
+                        rng::getRealUniformDist(imag_lower, imag_upper));
 
     ret[0].setFitness(_fitness_function(ret[0]));
     ret[1].setFitness(_fitness_function(ret[1]));
@@ -180,16 +236,43 @@ void Population::crossover(Individual offspring[2], Individual* parents[2]) {
 }
 
 
+
+
+std::complex<double> Population::gradient(Individual *parent, unsigned long parts) {
+    double alpha = 2.0 * M_PI / parts;
+    double radius = 0.0025;
+
+    std::complex<double> x = parent->getChromosome();
+    std::complex<double> best = parent->getChromosome();
+    double best_fit = parent->getFitness();
+    std::complex<double> step{0,0};
+
+    for(int i = 1; i < parts+1; i++){
+        step = alpha * i * (x + radius);
+        double step_fit = std::abs(_polynomial(step));
+        if (step_fit < best_fit){
+            best = step;
+            best_fit = step_fit;
+        }
+    }
+
+    return best;
+}
+
+
+
+
+
 void Population::mutate(Individual &x){
 
-    if (mRandom::getRandUniformDist(0.0, 1.0) <= _mutation_rate) {
+    if (rng::getRealUniformDist(0.0, 1.0) <= _mutation_rate) {
         double new_real;
         double new_imag;
 
         //pick numbers within range
         do {
-            new_real = mRandom::getRandUniformDist(0.0, _mutation_radius);
-            new_imag = mRandom::getRandUniformDist(0.0, _mutation_radius);
+            new_real = rng::getRealUniformDist(0.0, _mutation_radius);
+            new_imag = rng::getRealUniformDist(0.0, _mutation_radius);
 
         } while (std::pow(new_real, 2) + std::pow(new_imag, 2) <= std::pow(_mutation_radius, 2));
 
@@ -276,8 +359,8 @@ int Population::handleConvergence() {
 
         //pick numbers within range
         do {
-            new_real = mRandom::getRandUniformDist(0.0, _mutation_radius);
-            new_imag = mRandom::getRandUniformDist(0.0, _mutation_radius);
+            new_real = rng::getRealUniformDist(0.0, _mutation_radius);
+            new_imag = rng::getRealUniformDist(0.0, _mutation_radius);
         } while (std::pow(new_real, 2) + std::pow(new_imag, 2) <= std::pow(_mutation_radius, 2));
 
 
@@ -337,15 +420,16 @@ Individual& Population::get(unsigned long i) {
 
 
 
-Population::STATUS Population::evolve(){
+Population::status Population::evolve(){
 
-    STATUS status = NOT_FOUND;
+    status status = NOT_FOUND;
 
     //sort population
     sort();
 
     //print summary
     //printSummary();
+
 
     //check for a root
     if (checkSolution()) return FOUND;
@@ -358,44 +442,72 @@ Population::STATUS Population::evolve(){
 
 
     //new generation
-    unsigned long new_pop_size = _population_size / 3;
-    if (new_pop_size % 2 != 0) new_pop_size++;
+    //unsigned long new_pop_size = _population_size;
+    //if (new_pop_size % 2 != 0) new_pop_size++;
 
-    Population new_generation(_fitness_function, new_pop_size);
+    Population new_generation(_fitness_function, _population_size);
 
-    for (unsigned long i = 0; i < (_population_size / 3); i+=2) {
-        std::cout << "what is happening0" << std::endl;
+    for (unsigned long i = 0; i < _population_size; i++) {
+        //Individual* parents[2];
+        //select(parents);
 
-        Individual* parents[2];
-        select(parents);
-        std::cout << "what is happening1" << std::endl;
+        //Individual offspring[2];
+        //crossover(offspring, parents);
+        //offspring[0] = gradient(parents[0]);
+        //offspring[1] = gradient(parents[1]);
 
-        Individual offspring[2];
-        crossover(offspring, parents);
-        std::cout << "what is happening2" << std::endl;
-        mutate(offspring[0]);
-        mutate(offspring[1]);
-        std::cout << "what is happening3" << std::endl;
-        new_generation._population.push_back(offspring[0]);
-        new_generation._population.push_back(offspring[1]);
+        //mutate(offspring[0]);
+        //mutate(offspring[1]);
 
-        //new_generation._population.at(i)     = offspring[0];
-        //new_generation._population.at(i + 1) = offspring[1];
+        //new_generation._population[i]     = offspring[0];
+        //new_generation._population[i + 1] = offspring[1];
+
+        Individual* parent = select();
+        Individual offspring = Individual(gradient(parent));
+        mutate(offspring);
+
+        new_generation._population[i] = offspring;
+
+
     }
 
     fitPopulation(new_generation);
+
+
+//    std::cout << "---OUT OF LOOP------------------------------------\n";
+//    int i = 0;
+//    for (Individual& p : _population){
+//        std::cout << i << ": " << p.getChromosome() << " ==> " << p.getFitness() << std::endl;
+//        i++;
+//    }
+//    std::cout << "------------------------------------\n";
+//    i = 0;
+//    for (Individual* p : _combined_population){
+//        std::cout << i << ": " << p->getChromosome() << " ==> " << p->getFitness() << std::endl;
+//        i++;
+//    }
+//    std::cout << "------------------------------------\n";
+//    i = 0;
+//    for (Individual p : new_generation._population){
+//        std::cout << i << ": " << p.getChromosome() << " ==> " << p.getFitness() << std::endl;
+//        i++;
+//    }
+//
+//    std::cout << "p size  = " << _population_size << std::endl;
+//    std::cout << "cp size = " << _combined_population_size << std::endl;
+//    std::cout << "ng size = " << new_generation._population_size << std::endl;
+//    std::cout << "---DONE PRINTING------------------------------------\n";
+
+
 
     replace(new_generation);
 
     _generation++;
 
-    //_combined_population = _population;
+    _combined_population.empty();
     for (int i = 0; i < _population_size; i++){
         _combined_population[i] = &_population[i];
     }
-
-
-
 
 
     return status;
@@ -594,9 +706,16 @@ Individual& Population::operator[] (int ndx) {
 }
 
 
-void Population::sort(bool descending){
-    if (descending) std::sort(_population.begin(), _population.end(), std::greater<Individual>());
-    else            std::sort(_population.begin(), _population.end(), std::less<Individual>());
+void Population::sort(bool descending) {
+    if (descending) {
+        std::sort(_population.begin(), _population.end(), std::greater<Individual>());
+        std::sort(_combined_population.begin(), _combined_population.end(),
+                  [](Individual *i, Individual *j) { return i->getFitness() > j->getFitness(); });
+    } else {
+        std::sort(_population.begin(), _population.end(), std::less<Individual>());
+        std::sort(_combined_population.begin(), _combined_population.end(),
+                  [](Individual *i, Individual *j) { return i->getFitness() < j->getFitness(); });
+    }
 }
 
 

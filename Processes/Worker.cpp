@@ -35,37 +35,29 @@ int Worker::mainProcedure() {
     //initialize population
     population.init();
 
-    /*std::cout << "\n\n\n";
-    std::cout << "pop\t|\tcomb" << std::endl;
-    for (int i = 0; i < population._population_size; i++){
-        std::cout << population._population[i] << "\t|\t" << population._combined_population[i] << std::endl;
-    }*/
-
-
-    int x = -1;
+    //x is the status code
+    int x = NOTHING;
 
     //evolutionary loop
     for (long gen = 0; gen < 100 /*|| population reaches goal*/; gen++){
-        //std::cout << "starting loop" << std::endl;
+
 
         //wait to start
         MPI_Recv(&x, MAX_SIZE, MPI_INTEGER, MASTER_PID, TAG_CONTINUE, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
-        //std::cout << "evolving" << std::endl;
-
         //evolve population once
         population.evolve();
 
-        //std::cout << "checking" << std::endl;
+        if (population.checkSolution()) x = COMPLETE;
 
-        if (population.checkSolution()){
-            std::cout << "we done bois" << std::endl;
-            x = Population::FOUND;
-        }
-
+        //sending status code
         MPI_Send(&x, 1, MPI_INTEGER, MASTER_PID, TAG_STATUS_UPDATE, MPI_COMM_WORLD);
 
-        //std::cout << "getting summary" << std::endl;
+        if (x == COMPLETE){
+            std::complex<double> found = (std::complex<double>) population.getBestFit();
+            MPI_Send(&found, 1, MPI_DOUBLE_COMPLEX, MASTER_PID,TAG_FINAL, MPI_COMM_WORLD);
+        }
+
 
         //get a summary of the population statistics
         double summary[Population::SUM_SIZE];
@@ -73,8 +65,6 @@ int Worker::mainProcedure() {
 
         //send array to master node
         MPI_Send(summary, Population::SUM_SIZE, MPI_DOUBLE, MASTER_PID, TAG_SUMMARY, MPI_COMM_WORLD);
-
-
 
 
         //TODO: log progress

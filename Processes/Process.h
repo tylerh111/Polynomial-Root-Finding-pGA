@@ -22,6 +22,17 @@ public:
     static int networkSize;
 
     //TODO: put status message tags
+    enum status {
+        NOTHING = 0,
+        CONTINUE = 1,
+        COMPLETE = 2,
+        NOTHING_MORE = 3,
+        CONTINUE_MORE = 4,
+        COMPLETE_MORE = 5,
+        SUMMARY = 6,
+
+
+    };
 
     const static int MASTER_PID = 0;
     const static int TAG_CONTINUE = 3;

@@ -19,7 +19,7 @@ private:
     Polynomial& polynomial;
     bool finished;
 
-    int generation;
+    long generation;
     bool shouldPrintHeader;
 
     std::mutex mutex_finished;
@@ -31,8 +31,8 @@ private:
 
 
 public:
+    Master() = default;
     Master(int pid, std::string pname, Polynomial& polynomial);
-
     ~Master() override = default;
 
     void processHandler(int tid);
