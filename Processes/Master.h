@@ -30,6 +30,12 @@ private:
     std::condition_variable cv_finished;
 
 
+    std::vector<int> continue_status_list;
+    std::vector<std::mutex> continue_mutex_list;
+    std::vector<std::condition_variable> continue_cv_list;
+
+
+
 public:
     Master() = default;
     Master(int pid, std::string pname, Polynomial& polynomial);
@@ -38,7 +44,7 @@ public:
     void processHandler(int tid);
 
     void printHeader();
-    void printReport(int id, double summary[Population::SUM_SIZE]);
+    void printReport(int id, double summary[Population::SUM_SIZE], std::string note = "");
 
     //void onSummaryReceived(double ret[Population::SUM_SIZE]);
 

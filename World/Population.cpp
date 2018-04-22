@@ -238,17 +238,16 @@ void Population::crossover(Individual offspring[2], Individual* parents[2]) {
 
 
 
-std::complex<double> Population::gradient(Individual *parent, unsigned long parts) {
-    double alpha = 2.0 * M_PI / parts;
-    double radius = 0.0025;
+std::complex<double> Population::gradient(Individual *parent) {
+    double alpha = 2.0 * M_PI / gradParts;
 
     std::complex<double> x = parent->getChromosome();
     std::complex<double> best = parent->getChromosome();
     double best_fit = parent->getFitness();
     std::complex<double> step{0,0};
 
-    for(int i = 1; i < parts+1; i++){
-        step = alpha * i * (x + radius);
+    for(int i = 1; i < gradParts+1; i++){
+        step = alpha * i * (x + gradRadius);
         double step_fit = std::abs(_polynomial(step));
         if (step_fit < best_fit){
             best = step;
@@ -351,6 +350,16 @@ bool Population::checkFitnessConvergence() const {
     return true;
 }
 
+bool Population::checkStandDeviationConvergence() const{
+
+    double summary[SUM_SIZE] = {0};
+    getSummary(summary);
+    return summary[SUM_NDX_STD_DEV] <= standDeviationConvergenceThreshold;
+
+}
+
+
+
 int Population::handleConvergence() {
 
     for (int i = 0; i < _population_size; i++) {
@@ -359,13 +368,14 @@ int Population::handleConvergence() {
 
         //pick numbers within range
         do {
-            new_real = rng::getRealUniformDist(0.0, _mutation_radius);
-            new_imag = rng::getRealUniformDist(0.0, _mutation_radius);
+            new_real = rng::getRealUniformDist(0.0, 2 * _mutation_radius) - _mutation_radius;
+            new_imag = rng::getRealUniformDist(0.0, 2 * _mutation_radius) - _mutation_radius;
         } while (std::pow(new_real, 2) + std::pow(new_imag, 2) <= std::pow(_mutation_radius, 2));
 
 
         _population[i].setReal(new_real + _population[i].getReal());
         _population[i].setImaginary(new_imag + _population[i].getImaginary());
+        _population[i].setFitness(_fitness_function(_population[i]));
     }
 
 }
@@ -440,6 +450,24 @@ Population::status Population::evolve(){
         handleConvergence();
     }
 
+//    if (checkStandDeviationConvergence()) {
+//        std::cout << "before fixing~~~~~~~~~~~~~~~~~~~~~" << std::endl;
+//        int i = 0;
+//        for (Individual& p : _population){
+//            std::cout << i << ": " << p.getChromosome() << " ==> " << p.getFitness() << std::endl;
+//            i++;
+//        }
+//        status = CONVERGED;
+//        handleConvergence();
+//        std::cout << "after fixing~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
+//        i = 0;
+//        for (Individual& p : _population){
+//            std::cout << i << ": " << p.getChromosome() << " ==> " << p.getFitness() << std::endl;
+//            i++;
+//        }
+//        //std::this_thread::sleep_for(std::chrono::seconds(1));
+//    }
+
 
     //new generation
     //unsigned long new_pop_size = _population_size;
@@ -508,6 +536,12 @@ Population::status Population::evolve(){
     for (int i = 0; i < _population_size; i++){
         _combined_population[i] = &_population[i];
     }
+
+
+
+    //modify radii and rates
+
+
 
 
     return status;

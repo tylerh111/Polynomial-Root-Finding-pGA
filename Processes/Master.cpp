@@ -11,13 +11,13 @@ Master::Master(int pid, std::string pname, Polynomial& polynomial)
     this->pid = pid;
     this->pname = std::move(pname);
     for(int& i : this->buffer) i = 0;
+    this->continue_status_list = std::vector<int>(networkSize);
+    for(int& i : this->continue_status_list) i = -1;
+    this->continue_mutex_list = std::vector<std::mutex>(networkSize);
+    this->continue_cv_list = std::vector<std::condition_variable>(networkSize);
 }
 
 
-
-//void Master::onSummaryReceived(double ret[Population::SUM_SIZE]){
-//
-//}
 
 
 void Master::printHeader() {
@@ -36,7 +36,7 @@ void Master::printHeader() {
 }
 
 
-void Master::printReport(int id, double *summary) {
+void Master::printReport(int id, double *summary, std::string note) {
     std::lock_guard<std::mutex> lock(mutex_stdout);
     std::cout << std::scientific << std::setw(11) << std::setprecision(3) << id << "  | "
               << std::scientific << std::setw(11) << std::setprecision(3) << summary[Population::SUM_NDX_MEAN] << " | "
@@ -45,7 +45,7 @@ void Master::printReport(int id, double *summary) {
               << std::scientific << std::setw(11) << std::setprecision(3) << summary[Population::SUM_NDX_FIRST_Q] << " | "
               << std::scientific << std::setw(11) << std::setprecision(3) << summary[Population::SUM_NDX_SECOND_Q] << " | "
               << std::scientific << std::setw(11) << std::setprecision(3) << summary[Population::SUM_NDX_THIRD_Q] << " | "
-              << std::scientific << std::setw(11) << std::setprecision(3) << summary[Population::SUM_NDX_MAX] << "\n";
+              << std::scientific << std::setw(11) << std::setprecision(3) << summary[Population::SUM_NDX_MAX] << note << "\n";
 }
 
 
@@ -55,9 +55,9 @@ void Master::processHandler(const int tid) {
     double summary[Population::SUM_SIZE];
 
     //print first header
-    std::lock_guard<std::mutex> lock_header(mutex_printHeader);
+    /*std::lock_guard<std::mutex> lock_header(mutex_printHeader);
     printHeader();
-    lock_header.~lock_guard();
+    lock_header.~lock_guard();*/
 
     std::complex<double> final;
 
@@ -65,11 +65,23 @@ void Master::processHandler(const int tid) {
 
     long l_gen = -1;
 
+    //std::string note = "";
+
     while(!finished){
+
+        for(int i = 1; i < networkSize; i++){
+            std::unique_lock<std::mutex> lock(continue_mutex_list[i]);
+            continue_cv_list[i].wait(lock, [this, i, l_gen](){ return continue_status_list[i] == l_gen; });
+        }
+
+
+
+        std::cout << "thread " << tid << " looping" << std::endl;
 
         //increment the generation and print header counter if local counter is the same
         std::lock_guard<std::mutex> lock_generation(mutex_generation);
-        if (generation == l_gen) {
+        std::cout << "thread " << tid << " generation = " << generation << " l_gen = " << l_gen << std::endl;
+        if (generation != l_gen) {
             generation++;
             printHeader();
         }
@@ -77,30 +89,38 @@ void Master::processHandler(const int tid) {
 
 
         //allow worker to continue
-        MPI_Send(&x, 1, MPI_INTEGER, tid, TAG_CONTINUE, MPI_COMM_WORLD);
+        MPI_Send(&x, 1, MPI_INTEGER, tid, 0, MPI_COMM_WORLD);
 
-        std::cout << "waiting to recv information\n";
+        std::cout << "thread " << tid << " waiting for response" << std::endl;
+
 
         //receive status from worker
-        MPI_Recv(&x, 1, MPI_INTEGER, tid, TAG_STATUS_UPDATE, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        MPI_Recv(&x, 1, MPI_INTEGER, tid, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
+        std::cout << "thread " << tid << " received a response" << std::endl;
 
-        //TODO: use buffer to check status of worker more extensively
-        std::lock_guard<std::mutex> lock_finish(mutex_finished);
-        if(x == COMPLETE || x == COMPLETE_MORE) finished = true;
-        lock_finish.~lock_guard();
-
+        if(x == COMPLETE || x == COMPLETE_MORE) {
+            std::lock_guard<std::mutex> lock(mutex_finished);
+            finished = true;
+        }
         if(x == COMPLETE_MORE){
-            MPI_Recv(&final, 1,MPI_DOUBLE_COMPLEX, tid, TAG_FINAL, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            MPI_Recv(&final, 1, MPI_DOUBLE_COMPLEX, tid, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         }
 
-        std::cout << "waiting to recv summary report\n";
+        std::cout << "thread " << tid << " waiting for results" << std::endl;
+
 
         //get summary of progress
-        MPI_Recv(summary, Population::SUM_SIZE, MPI_DOUBLE, tid, TAG_SUMMARY, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        MPI_Recv(summary, Population::SUM_SIZE, MPI_DOUBLE, tid, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+
+        std::cout << "thread " << tid << " received results" << std::endl;
 
         //print summary
-        printReport(tid, summary);
+        if (x == CONVERGED) printReport(tid, summary, " ==> Convergence");
+        else printReport(tid, summary);
+
+
 
         l_gen++;
     }
@@ -115,7 +135,7 @@ void Master::processHandler(const int tid) {
 
 int Master::mainProcedure() {
 
-    std::cout << "Starting";
+    std::cout << "starting" << std::endl;
 
     std::thread threads[networkSize];
 

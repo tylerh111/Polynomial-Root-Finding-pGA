@@ -36,7 +36,6 @@
  */
 int main(int argc, char* argv[]) {
 
-
     //print argv
     //int i = -1;
     //while(argv[++i] != nullptr) std::cout << "argv[" << i << "] = " << argv[i] << std::endl;
@@ -95,8 +94,7 @@ int main(int argc, char* argv[]) {
                   << "\nmutationRadius = " << mutationRadius
                   << "\nstartingRadius = " << startingRadius << std::endl;
     };
-    //p();
-
+    //if (pid == 0) p(); return 1;
 
     //setting up processes
     int pname_len;

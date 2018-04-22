@@ -7,7 +7,7 @@
 #include <utility>
 
 
-int Process::networkSize = -1;
+unsigned long Process::networkSize = -1;
 
 void Process::setNetworkSize(int networkSize){
     Process::networkSize = networkSize;

@@ -19,7 +19,7 @@ protected:
     int buffer[MAX_SIZE];
 
 public:
-    static int networkSize;
+    static unsigned long networkSize;
 
     //TODO: put status message tags
     enum status {
@@ -30,6 +30,8 @@ public:
         CONTINUE_MORE = 4,
         COMPLETE_MORE = 5,
         SUMMARY = 6,
+
+        CONVERGED = 7,
 
 
     };

@@ -28,7 +28,7 @@ private:
     //number of generation that this population evolve
     unsigned long _generation{};
 
-    //mutation: rate and radius
+    //mutation: rate and gradRadius
     double _mutation_rate{};
     double _mutation_radius{};
 
@@ -37,10 +37,23 @@ private:
 
     //fitness function
     std::function<double(const Individual&)> _fitness_function;
-    //static const std::function<double(const Individual&)> DEF_FITNESS_FUNCTION;
-
     Polynomial _polynomial{};
-    //static const Polynomial DEF_POLYNOMIAL;
+
+
+
+
+    //misc
+    double fitnessConvergenceThreshold{0.6};
+    double standDeviationConvergenceThreshold{1.25e-8};
+
+    unsigned long gradParts{DEF_GRADIENT_PARTS};
+    double gradRadius{DEF_GRADIENT_RADIUS};
+
+    double gradDrift{DEF_GRADIENT_DRIFT};
+
+
+    double mutDrift{DEF_MUTATION_DRIFT};
+
 
     //range for crossover
     //double _minor_axis; //ellipse b value
@@ -54,7 +67,7 @@ protected:
     void select(Individual* parents[2]);
     Individual* select();
     void crossover(Individual offspring[2], Individual* parents[2]);
-    std::complex<double> gradient(Individual *parent, unsigned long parts = DEF_GRADIENT_PARTS);
+    std::complex<double> gradient(Individual *parent);
     void mutate(Individual& x);
     void replace(Population& replacement);
 
@@ -102,9 +115,12 @@ public:
     static constexpr double    DEF_ACCEPTED_ERROR   = 0.005;
     static constexpr double    DEF_MUTATION_RATE    = 0.33;
     static constexpr double    DEF_MUTATION_RADIUS  = 100;
+    static constexpr double    DEF_MUTATION_DRIFT   = 0.25; // not tested
     static constexpr double    DEF_START_RADIUS     = 1000000;
     static const unsigned long DEF_START_GENERATION = 0;
     static const unsigned long DEF_GRADIENT_PARTS   = 10;
+    static constexpr double        DEF_GRADIENT_RADIUS  = 0.025;
+    static constexpr double        DEF_GRADIENT_DRIFT   = 0.25; //non tested
 
 
     //Constructors
@@ -155,6 +171,7 @@ public:
     bool checkSolution() const;
     bool checkChromosomeConvergence() const;
     bool checkFitnessConvergence() const;
+    bool checkStandDeviationConvergence() const;
 
     //set and fit population
     double fitPopulation();

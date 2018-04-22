@@ -12,8 +12,8 @@
 
 class Worker : public Process {
 private:
-    Polynomial polynomial;
-    Population population;
+    Polynomial& polynomial;
+    Population& population;
 
 public:
     Worker() = default;
