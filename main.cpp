@@ -15,6 +15,28 @@
 
 
 
+void printPopulationInfo(const Polynomial& polynomial,
+                         const unsigned long populationSize,
+                         const double acceptedError,
+                         const double mutationRate,
+                         const double mutationRadius,
+                         const double startingRadius){
+
+    std::cout << std::endl;
+    std::cout << "------------------------------------------------" << std::endl;
+    std::cout <<   "polynomial      = " << polynomial
+              << "\npopulation size = " << populationSize
+              << "\naccepted error  = " << acceptedError
+              << "\nmutation rate   = " << mutationRate
+              << "\nmutation radius = " << mutationRadius
+              << "\nstarting radius = " << startingRadius << std::endl;
+    std::cout << "------------------------------------------------\n\n";
+
+}
+
+
+
+
 
 
 /**
@@ -59,6 +81,12 @@ int main(int argc, char* argv[]) {
     ierr = MPI_Comm_rank(MPI_COMM_WORLD, &pid);
     ierr = MPI_Comm_size(MPI_COMM_WORLD, &size);
 
+//    if (pid == 0) {
+//        for (int i = 0; i < size; i++){
+//            std::cout << "rank: " << i << std::endl;
+//        }
+//    }
+
     Process::setNetworkSize(size);
 
     //size must be 2 or more
@@ -87,40 +115,52 @@ int main(int argc, char* argv[]) {
 
 
 
-    auto p = [=]()->void{
-        std::cout << "populationSize = " << populationSize
-                  << "\nacceptedError = " << acceptedError
-                  << "\nmutationRate = " << mutationRate
-                  << "\nmutationRadius = " << mutationRadius
-                  << "\nstartingRadius = " << startingRadius << std::endl;
-    };
-    //if (pid == 0) p(); return 1;
-
     //setting up processes
     int pname_len;
     MPI_Get_processor_name(pname, &pname_len);
 
 
+    //setting up seeds
+    //unsigned long seeds[size];
+    //for (unsigned long i = 0; i < size; i++) seeds[i] = i;
+
+    auto seed = (unsigned long) pid;
+
     //if we are the master node
     if (pid == Process::MASTER_PID){
-        std::cout << "master process" << std::endl;
-        std::cout << "pname = " << pname << std::endl;
+        std::cout << "Master process: " << pname << std::endl;
+
+
+        MPI_Barrier(MPI_COMM_WORLD); //master printed info
+        MPI_Barrier(MPI_COMM_WORLD); //wait for everyone else to print
+
+        printPopulationInfo(polynomial, populationSize, acceptedError,mutationRate, mutationRadius, startingRadius);
+
+        MPI_Barrier(MPI_COMM_WORLD); //master printed population info
+
         Master master(pid, pname, polynomial);
         master.mainProcedure();
 
     }
     else{
+        MPI_Barrier(MPI_COMM_WORLD); //wait for master to print
+        std::cout << "Worker process (" << pid << "): " << pname << std::endl;
 
-        //std::cout << "server process" << std::endl;
-        //std::cout << "pname = " << pname << std::endl;
-        rng::seedGenerator(1);
+        MPI_Barrier(MPI_COMM_WORLD); //everyone else printed
+        MPI_Barrier(MPI_COMM_WORLD); //wait for master to print population info
+
 
         auto fitnessFunction = mFitnessFunctions::makeAbsoluteValue(polynomial);
 
-        Population population = Population(fitnessFunction, polynomial, populationSize, acceptedError, mutationRate, mutationRadius);
+        Population population = Population(fitnessFunction,
+                                           polynomial,
+                                           populationSize,
+                                           acceptedError,
+                                           mutationRate,
+                                           mutationRadius);
 
-        //TODO: add a seed for the population
-        Worker worker(pid, pname, polynomial, population);
+
+        Worker worker(pid, pname, polynomial, population, seed);
         worker.mainProcedure();
     }
 

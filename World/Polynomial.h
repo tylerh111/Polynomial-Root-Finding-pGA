@@ -22,6 +22,13 @@ private:
     int coefficients_len;
 
 public:
+    class FileNotFoundException: public std::runtime_error{
+    public:
+        explicit FileNotFoundException(const std::string &msg = "File was not found")
+                : runtime_error(msg) {}
+    };
+
+
     Polynomial() = default;
     explicit Polynomial(char* filename);
     ~Polynomial();
@@ -37,6 +44,7 @@ public:
 
 
     std::string to_string() const; //override operation<<
+    friend std::ostream& operator<<(std::ostream &out, const Polynomial& p);
     std::complex<double> operator()(const std::complex<double>& input) const;
 
 };

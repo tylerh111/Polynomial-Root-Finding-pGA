@@ -11,8 +11,8 @@
 
 
 std::random_device rng::device;
-//std::mt19937_64 rng::generator(rng::device());
-std::mt19937_64 rng::generator(0);
+std::mt19937_64 rng::generator(rng::device());
+//std::mt19937_64 rng::generator(0);
 bool rng::isSeeded = false;
 
 void rng::seedGenerator(unsigned long seed) {

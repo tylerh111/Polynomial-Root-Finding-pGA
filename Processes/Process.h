@@ -32,12 +32,14 @@ public:
         SUMMARY = 6,
 
         CONVERGED = 7,
+        STOP = 8,
 
 
     };
 
     const static int MASTER_PID = 0;
     const static int TAG_CONTINUE = 3;
+    const static int TAG_QUEUED_UP = 5;
     const static int TAG_STATUS_UPDATE = 4;
     const static int TAG_SUMMARY = 1;
     const static int TAG_FINAL = 2;
@@ -49,7 +51,7 @@ public:
 
     inline const int getPId()           const { return pid; }
     inline const std::string getPName() const { return pname; }
-    inline const int getNetworkSize()   const { return Process::networkSize; }
+    inline const unsigned long getNetworkSize() const { return Process::networkSize; }
 
     static void setNetworkSize(int networkSize);
 

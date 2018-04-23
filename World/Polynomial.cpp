@@ -86,7 +86,7 @@ Polynomial& Polynomial::operator=(Polynomial &&other) noexcept {
 
 
 std::string Polynomial::to_string() const {
-    if (filename.empty()) return ""; // throw an exception instead
+    if (filename.empty()) throw FileNotFoundException("Polynomial was not populated from a file");
     std::stringstream ss;
     for(int i = 0; i < coefficients_len; i++){
         bool isRealZero = coefficients[i].real() == 0;
@@ -99,6 +99,23 @@ std::string Polynomial::to_string() const {
     }
     return ss.str();
 }
+
+
+std::ostream& operator<<(std::ostream &out, const Polynomial &p) {
+    if (p.filename.empty()) throw Polynomial::FileNotFoundException("Polynomial was not populated from a file");
+    for(int i = 0; i < p.coefficients_len; i++){
+        bool isRealZero = p.coefficients[i].real() == 0;
+        bool isImagZero = p.coefficients[i].imag() == 0;
+        if (!isRealZero && !isImagZero) out << "(" << p.coefficients[i].real() << " + " << p.coefficients[i].imag() << "i)";
+        else if (!isRealZero) out << p.coefficients[i].real();
+        else if (!isImagZero) out << p.coefficients[i].imag();
+        else continue;
+        if (i + 1 != p.coefficients_len) out << "*x^" << p.degree - i << " + ";
+    }
+    return out;
+}
+
+
 
 
 

@@ -14,10 +14,11 @@ class Worker : public Process {
 private:
     Polynomial& polynomial;
     Population& population;
+    unsigned long seed;
 
 public:
     Worker() = default;
-    Worker(int pid, std::string pname, Polynomial& polynomial, Population& population);
+    Worker(int pid, std::string pname, Polynomial& polynomial, Population& population, unsigned long seed);
     ~Worker() override = default;
 
     int mainProcedure() override;

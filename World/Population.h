@@ -15,7 +15,7 @@
 
 
 class Population {
-private:
+public:
 
     //local population
     std::vector<Individual> _population;

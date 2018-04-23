@@ -307,8 +307,11 @@ void Population::mutate(Individual &x){
 void Population::replace(Population &replacement){
 
     //add the new individuals
-    for (long i = 0; i < replacement._population_size; i++)
-        _population.push_back(replacement[i]);
+//    for (long i = 0; i < replacement._population_size; i++) {
+//        _population.emplace_back(Individual(replacement[i]));
+//    }
+
+    _population.insert(std::end(_population), std::begin(replacement._population), std::end(replacement._population));
 
     //sort from least to greatest
     sort();
@@ -349,7 +352,6 @@ bool Population::checkFitnessConvergence() const {
 
     return true;
 }
-
 bool Population::checkStandDeviationConvergence() const{
 
     double summary[SUM_SIZE] = {0};
@@ -383,37 +385,6 @@ int Population::handleConvergence() {
 
 
 
-
-
-
-void Population::add(Individual &x) {
-    _population.push_back(x);
-}
-
-void Population::addAll(const std::vector<Individual> &vector) {
-    _population.insert(std::end(_population), std::begin(vector), std::end(vector));
-}
-
-void Population::remove(Individual &x) {
-    int i = 0;
-    while (i < _population_size && _population[i++] == x) { /* do nothing */ }
-    _population.erase(_population.begin() + --i);
-}
-
-
-
-
-
-Individual& Population::get(unsigned long i) {
-    return _population[i];
-}
-
-
-
-
-
-
-
 /*bool shouldPrint(int gen){
     return (gen < 10) ||
            ((gen < 100) && (gen % 10 == 0)) ||
@@ -437,10 +408,6 @@ Population::status Population::evolve(){
     //sort population
     sort();
 
-    //print summary
-    //printSummary();
-
-
     //check for a root
     if (checkSolution()) return FOUND;
 
@@ -450,57 +417,43 @@ Population::status Population::evolve(){
         handleConvergence();
     }
 
-//    if (checkStandDeviationConvergence()) {
-//        std::cout << "before fixing~~~~~~~~~~~~~~~~~~~~~" << std::endl;
-//        int i = 0;
-//        for (Individual& p : _population){
-//            std::cout << i << ": " << p.getChromosome() << " ==> " << p.getFitness() << std::endl;
-//            i++;
-//        }
-//        status = CONVERGED;
-//        handleConvergence();
-//        std::cout << "after fixing~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
-//        i = 0;
-//        for (Individual& p : _population){
-//            std::cout << i << ": " << p.getChromosome() << " ==> " << p.getFitness() << std::endl;
-//            i++;
-//        }
-//        //std::this_thread::sleep_for(std::chrono::seconds(1));
-//    }
-
 
     //new generation
     //unsigned long new_pop_size = _population_size;
     //if (new_pop_size % 2 != 0) new_pop_size++;
 
-    Population new_generation(_fitness_function, _population_size);
+    Population new_generation(_fitness_function, 0);
 
     for (unsigned long i = 0; i < _population_size; i++) {
-        //Individual* parents[2];
-        //select(parents);
+        Individual* parents[2];
+        select(parents);
 
-        //Individual offspring[2];
-        //crossover(offspring, parents);
+        Individual offspring[2];
+        crossover(offspring, parents);
         //offspring[0] = gradient(parents[0]);
         //offspring[1] = gradient(parents[1]);
 
-        //mutate(offspring[0]);
-        //mutate(offspring[1]);
+        mutate(offspring[0]);
+        mutate(offspring[1]);
 
-        //new_generation._population[i]     = offspring[0];
-        //new_generation._population[i + 1] = offspring[1];
-
-        Individual* parent = select();
-        Individual offspring = Individual(gradient(parent));
-        mutate(offspring);
-
-        new_generation._population[i] = offspring;
+        new_generation._population.push_back(offspring[0]);
+        new_generation._population.push_back(offspring[1]);
 
 
+
+//        Individual* parent = select();
+//        Individual offspring = Individual(gradient(parent));
+//        mutate(offspring);
+//
+//        new_generation._population[i] = offspring;
     }
+
+    new_generation._population_size = new_generation._population.size();
+
 
     fitPopulation(new_generation);
 
+    //std::cout << new_generation._population.size() << std::endl;
 
 //    std::cout << "---OUT OF LOOP------------------------------------\n";
 //    int i = 0;
@@ -527,7 +480,6 @@ Population::status Population::evolve(){
 //    std::cout << "---DONE PRINTING------------------------------------\n";
 
 
-
     replace(new_generation);
 
     _generation++;
@@ -540,8 +492,6 @@ Population::status Population::evolve(){
 
 
     //modify radii and rates
-
-
 
 
     return status;
@@ -641,8 +591,8 @@ void Population::getSummary(double summary[SUM_SIZE]) const {
     double thr_q = _population[thr_q_el].getFitness();
 
     //max/min
-    double pop_min = _population[0].getFitness();
-    double pop_max = _population[_population.size()].getFitness();
+    double pop_min = _population.front().getFitness();
+    double pop_max = _population.back().getFitness();
 
     summary[SUM_NDX_MEAN] = mean;
     summary[SUM_NDX_STD_DEV] = std_dev;
@@ -787,6 +737,32 @@ void Population::reset() {
 }
 
 
+
+
+
+
+
+void Population::add(Individual &x) {
+    _population.push_back(x);
+}
+
+void Population::addAll(const std::vector<Individual> &vector) {
+    _population.insert(std::end(_population), std::begin(vector), std::end(vector));
+}
+
+void Population::remove(Individual &x) {
+    int i = 0;
+    while (i < _population_size && _population[i++] == x) { /* do nothing */ }
+    _population.erase(_population.begin() + --i);
+}
+
+
+
+
+
+Individual& Population::get(unsigned long i) {
+    return _population[i];
+}
 
 
 
