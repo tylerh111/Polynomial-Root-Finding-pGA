@@ -37,7 +37,10 @@ public:
 
     };
 
+
     const static int MASTER_PID = 0;
+    const static int MIGRATION_LIMIT = 200;
+
     const static int TAG_CONTINUE = 3;
     const static int TAG_QUEUED_UP = 5;
     const static int TAG_STATUS_UPDATE = 4;

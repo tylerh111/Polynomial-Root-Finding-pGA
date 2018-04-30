@@ -114,6 +114,8 @@ int Worker::mainProcedure() {
     bool continueEvolving = true;
     double summary[Population::SUM_SIZE];
 
+    std::complex<double> migration_buf[MIGRATION_LIMIT];
+
 
     //initialize population
     population.init(start_radius);
@@ -177,8 +179,18 @@ int Worker::mainProcedure() {
         MPI_Send(summary, Population::SUM_SIZE, MPI_DOUBLE, MASTER_PID, TAG_SUMMARY, MPI_COMM_WORLD);
 
 
-        //TODO: log progress
-        //TODO: integration / migrate
+        //Migration and integration
+        /*for (int i = 1; i < networkSize; i++){
+            //get migration population to send
+            if (i == pid){
+                population.migration(migration_buf);
+            }
+            MPI_Bcast(&migration_buf, MIGRATION_LIMIT, MPI_DOUBLE_COMPLEX, i, MPI_COMM_WORLD);
+            if (i != pid){
+                population.integration(migration_buf);
+            }
+        }*/
+
     }
 
     const std::complex<double> best = population.getBestFit().getChromosome();

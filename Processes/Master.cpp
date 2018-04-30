@@ -143,6 +143,7 @@ int Master::mainProcedure(){
     auto startTime  = std::chrono::high_resolution_clock::now();
     auto epochStart = startTime;
 
+    std::complex<double> migration_buf[MIGRATION_LIMIT];
 
     std::cout << "starting" << std::endl;
 
@@ -178,6 +179,7 @@ int Master::mainProcedure(){
         if (finished) break;
 
         printHeader();
+//        std::cout << "starting at master" << std::endl;
 
         for(int wid = 1; wid < networkSize; wid++){
 
@@ -211,6 +213,11 @@ int Master::mainProcedure(){
         std::cout << std::defaultfloat << std::setprecision(10)  << "Epoch during: " << 0.001 * epochDuration.count() << "s" << std::endl;
 
 
+        /*//migration and integration
+        for (int i = 1; i < networkSize; i++){
+            MPI_Bcast(&migration_buf, MIGRATION_LIMIT, MPI_DOUBLE_COMPLEX, i, MPI_COMM_WORLD);
+        }*/
+
         generation++;
     }
 
@@ -235,10 +242,7 @@ int Master::mainProcedure(){
     std::cout << std::fixed << std::setprecision(10) << "time elapsed: " << 0.001 * duration.count() << "s" << std::endl;
 
 
-
 }
-
-
 
 
 //int Master::mainProcedure() {

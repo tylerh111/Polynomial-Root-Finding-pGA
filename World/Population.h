@@ -12,6 +12,7 @@
 #include "Polynomial.h"
 
 #include "../Local.h"
+#include "../Processes/Process.h"
 
 
 class Population {
@@ -20,6 +21,10 @@ public:
     //local population
     std::vector<Individual> _population;
     unsigned long _population_size{};
+
+    //migrated population
+    //std::vector<Individual> _migrated_population;
+    //unsigned long _migrated_population_size{};
 
     //combined population (for migration)
     std::vector<Individual*> _combined_population;
@@ -160,7 +165,8 @@ public:
 
 
     //add migrates to combined population
-    void integration(const std::vector<Individual>& vector);
+    void migration(std::complex<double> buffer[Process::MIGRATION_LIMIT]);
+    void integration(const std::complex<double> buffer[Process::MIGRATION_LIMIT]);
 
 
     status evolve();

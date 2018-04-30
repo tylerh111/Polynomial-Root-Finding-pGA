@@ -25,6 +25,8 @@ double rng::getRealUniformDist(double lower, double upper) {
     return distribution(generator);
 }
 
+
+
 double rng::getRealNormalDist(double lower, double upper) {
     std::normal_distribution<double> distribution(lower, upper);
     return distribution(generator);

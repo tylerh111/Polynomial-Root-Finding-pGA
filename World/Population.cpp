@@ -36,6 +36,9 @@ Population::Population(std::function<double(const Individual&)> function,
     this->_population = std::vector<Individual>(pop_size);
     this->_population_size = pop_size;
 
+    /*this->_migrated_population = std::vector<Individual>(0);
+    this->_migrated_population_size = 0;*/
+
     this->_combined_population = std::vector<Individual*>(pop_size);
     this->_combined_population_size = _population_size;
 
@@ -63,10 +66,17 @@ Population::Population(const Population& that) {
     for (int i = 0; i < this->_population_size; i++) {
         _population[i] = Individual(that._population[i]);
     }
+    _population_size = _population.size();
+
+    /*for (int i = 0; i < this->_population_size; i++) {
+        _migrated_population[i] = Individual(that._population[i]);
+    }
+    _migrated_population_size = _migrated_population.size();*/
 
     for (int i = 0; i < that._combined_population_size; i++){
         _combined_population[i] = that._combined_population[i];
     }
+    _combined_population_size = _combined_population.size();
 
 }
 
@@ -384,23 +394,6 @@ int Population::handleConvergence() {
 
 
 
-
-/*bool shouldPrint(int gen){
-    return (gen < 10) ||
-           ((gen < 100) && (gen % 10 == 0)) ||
-           ((gen < 1000) && (gen % 100 == 0)) ||
-           ((gen < 10000) && (gen % 1000 == 0)) ||
-           (gen % 10000 == 0);
-}*/
-
-
-
-
-
-
-
-
-
 Population::status Population::evolve(){
 
     status status = NOT_FOUND;
@@ -484,15 +477,13 @@ Population::status Population::evolve(){
 
     _generation++;
 
+    //_migrated_population.empty();
     _combined_population.empty();
     for (int i = 0; i < _population_size; i++){
         _combined_population[i] = &_population[i];
     }
 
-
-
-    //modify radii and rates
-
+    _combined_population_size = _population_size;
 
     return status;
 }
@@ -729,8 +720,8 @@ std::ostream& operator<<(std::ostream &out, const Population &c) {
 
 
 void Population::reset() {
-    //_combined_population = _population;
-    //_combined_population_size = _population_size;
+    _combined_population.clear();
+    _combined_population_size = _population_size;
     for(int i = 0; i < _population_size; i++){
         _combined_population[i] = &_population[i];
     }
@@ -767,11 +758,23 @@ Individual& Population::get(unsigned long i) {
 
 
 
-/*void Population::integration(const std::vector<Individual>& vector) {
-    _combined_population_size += vector.size();
-    _combined_population.reserve(_combined_population_size);
-    _combined_population.insert(std::end(_combined_population), std::begin(vector), std::end(vector));
-}*/
+void Population::migration(std::complex<double> buffer[Process::MIGRATION_LIMIT]){
+    for (int i = 0; i < Process::MIGRATION_LIMIT; i++){
+        buffer[i] = _population[(int) rng::getRealUniformDist(0, _population_size)].getChromosome();
+    }
+}
+
+
+void Population::integration(const std::complex<double> buffer[Process::MIGRATION_LIMIT]) {
+    for (int i = 0; i < Process::MIGRATION_LIMIT; i++){
+        //_migrated_population.emplace_back(buffer[i]);
+        //_combined_population.push_back(&_migrated_population[i]);
+        _combined_population.push_back(new Individual(buffer[i]));
+    }
+
+    _combined_population_size = _combined_population.size();
+    //_migrated_population_size = _migrated_population.size();
+}
 
 
 
