@@ -1,3 +1,0 @@
-/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/tdh5188/workspace/comp512/Polynomial-Root-Finding-pGA/cmake-build-debug/CMakeFiles/Polynomial_Root_Finding_pGA.dir
