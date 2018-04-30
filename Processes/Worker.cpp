@@ -6,8 +6,8 @@
 #include "../Local.h"
 
 
-Worker::Worker(int pid, std::string pname, Polynomial& polynomial, Population& population, unsigned long seed)
-        : polynomial(polynomial), population(population), seed(seed) {
+Worker::Worker(int pid, std::string pname, Polynomial& polynomial, Population& population, unsigned long seed, double start_radius)
+        : polynomial(polynomial), population(population), seed(seed), start_radius(start_radius) {
     this->pid = pid;
     this->pname = std::move(pname);
     for(int& i : this->buffer) i = 0;
@@ -116,7 +116,7 @@ int Worker::mainProcedure() {
 
 
     //initialize population
-    population.init();
+    population.init(start_radius);
     //initial population statistics
     population.getSummary(summary);
 

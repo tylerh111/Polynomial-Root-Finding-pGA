@@ -141,7 +141,7 @@ void Master::printReport(int id, double *summary, std::string note) {
 
 int Master::mainProcedure(){
     auto startTime  = std::chrono::high_resolution_clock::now();
-    auto epochStart = std::chrono::high_resolution_clock::now();
+    auto epochStart = startTime;
 
 
     std::cout << "starting" << std::endl;
@@ -149,7 +149,7 @@ int Master::mainProcedure(){
     int code = NOTHING;
 
     std::complex<double> final;
-    int finder;
+    int finder = -1;
     double summary[Population::SUM_SIZE];
 
     printHeader();
@@ -232,7 +232,7 @@ int Master::mainProcedure(){
 
     std::chrono::duration<double, std::milli> duration = std::chrono::high_resolution_clock::now() - startTime;
 
-    std::cout << std::fixed << std::setprecision(10) << "time elapsed: " << duration.count() << "s" << std::endl;
+    std::cout << std::fixed << std::setprecision(10) << "time elapsed: " << 0.001 * duration.count() << "s" << std::endl;
 
 
 
@@ -247,7 +247,6 @@ int Master::mainProcedure(){
 //
 //    std::thread threads[networkSize];
 //
-//    //TODO: start time
 //
 //
 //    //start threads
@@ -268,7 +267,6 @@ int Master::mainProcedure(){
 //        if (threads[i].joinable()) threads[i].join();
 //    }
 //
-//    //TODO: end time
 //    //print time elapsed
 //
 //

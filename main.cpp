@@ -160,7 +160,7 @@ int main(int argc, char* argv[]) {
                                            mutationRadius);
 
 
-        Worker worker(pid, pname, polynomial, population, seed);
+        Worker worker(pid, pname, polynomial, population, seed, startingRadius);
         worker.mainProcedure();
     }
 

@@ -78,10 +78,10 @@ void mInformationRetrieval::getInformation(int argc, char **argv, unsigned long 
         if (strcmp("-mr", argv[j]) == 0 || strcmp("--mutation-rate", argv[j]) == 0) {
             mut_rate  = strtod(argv[++j], nullptr);
         }
-        if (strcmp("-ms", argv[j]) == 0 || strcmp("--mutation-gradRadius", argv[j]) == 0) {
+        if (strcmp("-ms", argv[j]) == 0 || strcmp("--mutation-radius", argv[j]) == 0) {
             mut_rad   = strtod(argv[++j], nullptr);
         }
-        if (strcmp("-ss", argv[j]) == 0 || strcmp("--starting-gradRadius", argv[j]) == 0) {
+        if (strcmp("-ss", argv[j]) == 0 || strcmp("--starting-radius", argv[j]) == 0) {
             start_rad = strtod(argv[++j], nullptr);
         }
 

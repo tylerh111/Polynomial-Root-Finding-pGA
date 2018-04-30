@@ -119,8 +119,8 @@ public:
     static constexpr double    DEF_START_RADIUS     = 1000000;
     static const unsigned long DEF_START_GENERATION = 0;
     static const unsigned long DEF_GRADIENT_PARTS   = 10;
-    static constexpr double        DEF_GRADIENT_RADIUS  = 0.025;
-    static constexpr double        DEF_GRADIENT_DRIFT   = 0.25; //non tested
+    static constexpr double    DEF_GRADIENT_RADIUS  = 0.025;
+    static constexpr double    DEF_GRADIENT_DRIFT   = 0.25; //non tested
 
 
     //Constructors

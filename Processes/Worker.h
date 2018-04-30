@@ -15,10 +15,15 @@ private:
     Polynomial& polynomial;
     Population& population;
     unsigned long seed;
+    double start_radius;
 
 public:
     Worker() = default;
-    Worker(int pid, std::string pname, Polynomial& polynomial, Population& population, unsigned long seed);
+    Worker(int pid, std::string pname,
+           Polynomial& polynomial,
+           Population& population,
+           unsigned long seed,
+           double start_radius = Population::DEF_START_RADIUS);
     ~Worker() override = default;
 
     int mainProcedure() override;
